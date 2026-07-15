@@ -28,11 +28,20 @@ export default function AdminDashboard() {
     }
 
     const loadData = async () => {
-      const [u, p, t] = await Promise.all([api.getUsers(), api.getProjects(), api.getTasks()]);
-      setUsers(u);
-      setProjects(p);
-      setTasks(t);
-      setIsLoading(false);
+      try {
+        const [u, p, t] = await Promise.all([
+          api.getUsers().catch(() => []), 
+          api.getProjects().catch(() => []), 
+          api.getTasks().catch(() => [])
+        ]);
+        setUsers(u || []);
+        setProjects(p || []);
+        setTasks(t || []);
+      } catch (err) {
+        console.error("Failed to load dashboard data", err);
+      } finally {
+        setIsLoading(false);
+      }
     };
     loadData();
   }, [router]);
@@ -244,7 +253,7 @@ export default function AdminDashboard() {
                         {project.status.replace("_", " ")}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-gray-500">{project.memberIds.length} members</td>
+                    <td className="px-6 py-4 text-gray-500">{(project.memberIds || []).length} members</td>
                     <td className="px-6 py-4 text-right">
                       <button 
                         onClick={() => router.push('/dashboard/admin/projects')}

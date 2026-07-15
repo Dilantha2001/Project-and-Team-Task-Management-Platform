@@ -13,13 +13,22 @@ export default function MemberTasksPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
-      const [t, p, u] = await Promise.all([api.getTasks(), api.getProjects(), api.getUsers()]);
-      setTasks(t); // Ideally filter by assigned user
-      setProjects(p);
-      setUsers(u);
+      try {
+        const [t, p, u] = await Promise.all([
+          api.getTasks().catch(() => []), 
+          api.getProjects().catch(() => []), 
+          api.getUsers().catch(() => [])
+        ]);
+        setTasks(t || []);
+        setProjects(p || []);
+        setUsers(u || []);
+      } catch (err) {
+        console.error("Load error", err);
+      }
     };
     loadData();
   }, []);
@@ -39,6 +48,10 @@ export default function MemberTasksPage() {
     setIsUpdating(null);
   };
 
+  const filteredTasks = tasks.filter(t => 
+    t.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <DashboardLayout role="TEAM_MEMBER">
       <div className="flex items-center justify-between mb-6">
@@ -56,6 +69,8 @@ export default function MemberTasksPage() {
               <input 
                 type="text" 
                 placeholder="Search tasks..." 
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-indigo-500"
               />
             </div>
@@ -72,7 +87,7 @@ export default function MemberTasksPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {tasks.map((task) => {
+              {filteredTasks.map((task) => {
                 const project = projects.find(p => p.id === task.projectId);
                 return (
                   <tr key={task.id} className="hover:bg-gray-50/50 transition-colors">

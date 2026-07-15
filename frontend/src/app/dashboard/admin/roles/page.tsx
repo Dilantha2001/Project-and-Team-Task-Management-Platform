@@ -1,14 +1,39 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Shield, Plus } from "lucide-react";
+import { Shield } from "lucide-react";
+import { api } from "@/services/api";
 
 export default function AdminRolesPage() {
+  const [roleCounts, setRoleCounts] = useState({ ADMIN: 0, PROJECT_MANAGER: 0, TEAM_MEMBER: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const users = await api.getUsers().catch(() => []);
+        const counts = { ADMIN: 0, PROJECT_MANAGER: 0, TEAM_MEMBER: 0 };
+        users.forEach(u => {
+          if (u.role === "ADMIN") counts.ADMIN++;
+          if (u.role === "PROJECT_MANAGER") counts.PROJECT_MANAGER++;
+          if (u.role === "TEAM_MEMBER") counts.TEAM_MEMBER++;
+        });
+        setRoleCounts(counts);
+      } catch (err) {
+        console.error("Failed to load roles data", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadStats();
+  }, []);
+
   const roles = [
-    { name: "Administrator", description: "Full access to all system features", users: 2 },
-    { name: "Project Manager", description: "Can create projects and assign tasks", users: 5 },
-    { name: "Team Member", description: "Can view and update assigned tasks", users: 15 },
+    { name: "Administrator", description: "Full access to all system features", users: roleCounts.ADMIN },
+    { name: "Project Manager", description: "Can create projects and assign tasks", users: roleCounts.PROJECT_MANAGER },
+    { name: "Team Member", description: "Can view and update assigned tasks", users: roleCounts.TEAM_MEMBER },
   ];
 
   return (
@@ -18,9 +43,6 @@ export default function AdminRolesPage() {
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Role Management</h1>
           <p className="text-sm text-gray-500 mt-1">Configure system roles and permissions.</p>
         </div>
-        <button className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm">
-          <Plus className="w-4 h-4 mr-1.5" /> Create Role
-        </button>
       </div>
 
       <Card>
@@ -44,10 +66,8 @@ export default function AdminRolesPage() {
                   <td className="px-6 py-4 font-medium text-gray-900">{role.name}</td>
                   <td className="px-6 py-4 text-gray-500">{role.description}</td>
                   <td className="px-6 py-4 font-medium">{role.users}</td>
-                  <td className="px-6 py-4 text-right">
-                    <button className="text-indigo-600 hover:text-indigo-800 font-medium text-xs">
-                      Edit Permissions
-                    </button>
+                  <td className="px-6 py-4 text-right text-gray-400 italic text-xs">
+                    Fixed Role
                   </td>
                 </tr>
               ))}

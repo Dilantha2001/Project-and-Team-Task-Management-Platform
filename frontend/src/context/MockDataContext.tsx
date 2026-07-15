@@ -50,13 +50,13 @@ export function MockDataProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addUser = async (userData: any) => {
-    // Usually done via register, but if admin adds user:
+    await api.createUser(userData);
     await refreshData();
   };
 
   const updateUserRole = async (id: string, role: Role) => {
-    // API for this doesn't exist yet, mock for now
     setUsers(users.map(u => u.id === id ? { ...u, role } : u));
+    await api.updateUserRole(id, role);
   };
 
   const addProject = async (projectData: Omit<Project, "id">) => {

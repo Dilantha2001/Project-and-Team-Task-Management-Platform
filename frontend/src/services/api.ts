@@ -36,9 +36,27 @@ export const api = {
     const response = await apiClient.get('/users');
     return response.data.data;
   },
+  createUser: async (userData: any): Promise<User> => {
+    // Admins creating a user is basically registering them
+    const response = await apiClient.post('/auth/register', userData);
+    return response.data.data;
+  },
+  updateUser: async (id: string, userData: any): Promise<User> => {
+    const response = await apiClient.put(`/users/${id}`, userData);
+    return response.data.data;
+  },
+  updateUserRole: async (id: string, role: Role): Promise<void> => {
+    await apiClient.patch(`/users/${id}/role`, { role });
+  },
+  deleteUser: async (id: string): Promise<void> => {
+    await apiClient.delete(`/users/${id}`);
+  },
   getProjects: async (): Promise<Project[]> => {
     const response = await apiClient.get('/projects');
-    return response.data.data;
+    return response.data.data.map((p: any) => ({
+      ...p,
+      memberIds: p.members?.map((m: any) => m.userId) || []
+    }));
   },
   createProject: async (projectData: Omit<Project, "id">): Promise<Project> => {
     const response = await apiClient.post('/projects', projectData);

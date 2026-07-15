@@ -15,9 +15,16 @@ export default function AdminProjectsPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const [p, u] = await Promise.all([api.getProjects(), api.getUsers()]);
-      setProjects(p);
-      setUsers(u);
+      try {
+        const [p, u] = await Promise.all([
+          api.getProjects().catch(() => []), 
+          api.getUsers().catch(() => [])
+        ]);
+        setProjects(p || []);
+        setUsers(u || []);
+      } catch (err) {
+        console.error("Failed to load projects", err);
+      }
     };
     loadData();
   }, []);
@@ -31,9 +38,6 @@ export default function AdminProjectsPage() {
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">System Projects</h1>
           <p className="text-sm text-gray-500 mt-1">Overview of all platform projects.</p>
         </div>
-        <button className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm">
-          <Plus className="w-4 h-4 mr-1.5" /> Force Create Project
-        </button>
       </div>
 
       <Card>
@@ -74,7 +78,7 @@ export default function AdminProjectsPage() {
                         {project.status.replace("_", " ")}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-gray-500">{project.memberIds.length} members</td>
+                    <td className="px-6 py-4 text-gray-500">{(project.memberIds || []).length} members</td>
                     <td className="px-6 py-4 text-right">
                       <button className="text-gray-400 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-indigo-50">
                         <MoreHorizontal className="w-4 h-4" />

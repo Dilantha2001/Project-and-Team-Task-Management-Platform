@@ -26,6 +26,7 @@ export default function AdminUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
@@ -48,10 +49,28 @@ export default function AdminUsersPage() {
   }, [router]);
 
   const onSubmit = async (data: UserFormValues) => {
-    const newUser = await api.createUser(data);
-    setUsers([...users, newUser]);
+    if (editingUser) {
+      const updated = await api.updateUser(editingUser.id, data);
+      setUsers(users.map(u => u.id === editingUser.id ? { ...u, ...updated } : u));
+    } else {
+      const newUser = await api.createUser(data);
+      setUsers([...users, newUser]);
+    }
     setIsModalOpen(false);
-    reset();
+    setEditingUser(null);
+    reset({ name: '', email: '', role: 'TEAM_MEMBER' });
+  };
+
+  const openCreateModal = () => {
+    setEditingUser(null);
+    reset({ name: '', email: '', role: 'TEAM_MEMBER' });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (user: User) => {
+    setEditingUser(user);
+    reset({ name: user.name, email: user.email, role: user.role });
+    setIsModalOpen(true);
   };
 
   const handleRoleChange = async (id: string, role: Role) => {
@@ -79,7 +98,7 @@ export default function AdminUsersPage() {
           <p className="text-sm text-gray-500 mt-1">Manage system access, roles, and user profiles.</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={openCreateModal}
           className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4 mr-1.5" /> Add User
@@ -122,7 +141,7 @@ export default function AdminUsersPage() {
                   <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
                     <td className="px-6 py-4 flex items-center">
                       <img 
-                        src={user.avatarUrl} 
+                        src={user.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} 
                         alt={user.name} 
                         className="h-10 w-10 rounded-full border border-gray-200 object-cover"
                       />
@@ -146,7 +165,7 @@ export default function AdminUsersPage() {
                       <Badge variant="success">Active</Badge>
                     </td>
                     <td className="px-6 py-4 text-right space-x-2">
-                      <button className="text-gray-400 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-indigo-50">
+                      <button onClick={() => openEditModal(user)} className="text-gray-400 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-indigo-50">
                         <Edit className="w-4 h-4" />
                       </button>
                       <button 
@@ -169,7 +188,7 @@ export default function AdminUsersPage() {
         <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
-              <h3 className="font-bold text-gray-900 text-lg">Create New User</h3>
+              <h3 className="font-bold text-gray-900 text-lg">{editingUser ? "Edit User" : "Create New User"}</h3>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 p-1">
                 <X className="w-5 h-5" />
               </button>

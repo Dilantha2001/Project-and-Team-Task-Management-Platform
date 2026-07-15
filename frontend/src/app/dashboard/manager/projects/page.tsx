@@ -17,9 +17,16 @@ export default function ManagerProjectsPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const [p, u] = await Promise.all([api.getProjects(), api.getUsers()]);
-      setProjects(p);
-      setUsers(u);
+      try {
+        const [p, u] = await Promise.all([
+          api.getProjects().catch(() => []), 
+          api.getUsers().catch(() => [])
+        ]);
+        setProjects(p || []);
+        setUsers(u || []);
+      } catch(err) {
+        console.error("Failed to load", err);
+      }
     };
     loadData();
   }, []);
@@ -28,14 +35,12 @@ export default function ManagerProjectsPage() {
     e.preventDefault();
     if (!newProjectName) return;
     
-    // Create project using the API
     const newProject = await api.createProject({
       name: newProjectName,
       description: "A newly created project",
       status: "ACTIVE",
-      managerId: "u2", // Hardcoded to manager for now
-      memberIds: ["u3", "u4"], // Add some random members
-      createdAt: new Date(),
+      managerId: "", // Backend sets this automatically via JWT token
+      memberIds: [], // Empty initially, can add members later
     });
     
     setProjects([...projects, newProject]);
@@ -100,26 +105,28 @@ export default function ManagerProjectsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex -space-x-2">
-                        {project.memberIds.slice(0,3).map((id, index) => {
+                        {(project.memberIds || []).slice(0,3).map((id, index) => {
                           const user = users.find(u => u.id === id);
                           return user ? (
                             <img 
-                              key={user.id} src={user.avatarUrl} alt={user.name} 
+                              key={user.id} 
+                              src={user.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} 
+                              alt={user.name} 
                               className="h-6 w-6 rounded-full border-2 border-white object-cover"
                               style={{ zIndex: 10 - index }}
                             />
                           ) : null;
                         })}
-                        {project.memberIds.length > 3 && (
+                        {(project.memberIds || []).length > 3 && (
                           <div className="h-6 w-6 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-[10px] font-medium text-gray-600 z-0">
-                            +{project.memberIds.length - 3}
+                            +{(project.memberIds || []).length - 3}
                           </div>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button 
-                        onClick={() => alert(`Managing project: ${project.name}`)}
+                        onClick={() => window.location.href = '/dashboard/manager/tasks'}
                         className="text-indigo-600 hover:text-indigo-800 font-medium text-xs bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors hover:bg-indigo-100"
                       >
                         Manage
