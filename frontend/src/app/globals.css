@@ -11,16 +11,16 @@
 }
 
 :root {
-  /* Premium Dark Theme */
-  --background: #09090b; /* Zinc 950 */
-  --foreground: #fafafa; /* Zinc 50 */
+  /* Premium Light Theme */
+  --background: #ffffff; /* White */
+  --foreground: #09090b; /* Zinc 950 */
   
-  /* Primary Accent: Vibrant Indigo/Purple */
-  --primary: #6366f1; /* Indigo 500 */
+  /* Primary Accent: Vibrant Indigo/Blue */
+  --primary: #4f46e5; /* Indigo 600 */
   --primary-foreground: #ffffff;
   
   /* Secondary Accent: Teal/Cyan */
-  --accent: #14b8a6; /* Teal 500 */
+  --accent: #0d9488; /* Teal 600 */
 }
 
 body {
@@ -34,13 +34,13 @@ body {
 /* Custom Utilities for Glassmorphism & Gradients */
 @layer utilities {
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    @apply bg-white/60 backdrop-blur-md border border-gray-200;
   }
   .glass-card {
-    @apply bg-[#18181b]/80 backdrop-blur-lg border border-white/10 shadow-xl rounded-2xl;
+    @apply bg-white/80 backdrop-blur-lg border border-gray-100 shadow-xl rounded-2xl;
   }
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-teal-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-teal-600;
   }
   .bg-gradient-primary {
     @apply bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300;

@@ -13,6 +13,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { MockDataProvider } from "@/context/MockDataContext";
+
 export const metadata: Metadata = {
   title: "Task Management Platform",
   description: "CyphLab Assignment",
@@ -24,14 +26,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
-        <Navbar />
-        <main className="container mx-auto p-4 pt-24">
+        <MockDataProvider>
           {children}
-        </main>
+        </MockDataProvider>
       </body>
     </html>
   );
