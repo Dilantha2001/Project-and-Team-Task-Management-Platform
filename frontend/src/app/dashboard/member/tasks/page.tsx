@@ -12,16 +12,32 @@ export default function MemberTasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       const [t, p, u] = await Promise.all([api.getTasks(), api.getProjects(), api.getUsers()]);
-      setTasks(t); // Ideally we'd filter for the logged in user here
+      setTasks(t); // Ideally filter by assigned user
       setProjects(p);
       setUsers(u);
     };
     loadData();
   }, []);
+
+  const handleUpdateStatus = async (task: Task) => {
+    setIsUpdating(task.id);
+    
+    let newStatus: any = "TODO";
+    if (task.status === "TODO") newStatus = "IN_PROGRESS";
+    else if (task.status === "IN_PROGRESS") newStatus = "DONE";
+    else newStatus = "TODO";
+
+    await api.updateTaskStatus(task.id, newStatus);
+    
+    // Update local state
+    setTasks(tasks.map(t => t.id === task.id ? { ...t, status: newStatus } : t));
+    setIsUpdating(null);
+  };
 
   return (
     <DashboardLayout role="TEAM_MEMBER">
@@ -68,8 +84,12 @@ export default function MemberTasksPage() {
                       </Badge>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="text-indigo-600 hover:text-indigo-800 font-medium text-xs bg-indigo-50 px-2 py-1 rounded">
-                        Update
+                      <button 
+                        onClick={() => handleUpdateStatus(task)}
+                        disabled={isUpdating === task.id}
+                        className="text-indigo-600 hover:text-indigo-800 font-medium text-xs bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors hover:bg-indigo-100 disabled:opacity-50"
+                      >
+                        {isUpdating === task.id ? "Updating..." : "Cycle Status"}
                       </button>
                     </td>
                   </tr>
