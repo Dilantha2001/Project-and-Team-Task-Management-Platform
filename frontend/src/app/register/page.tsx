@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { authApi } from "@/services/api";
+
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("MEMBER");
+  const [role, setRole] = useState("TEAM_MEMBER");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -15,8 +17,19 @@ export default function Register() {
     e.preventDefault();
     setError("");
     
-    // Dummy register without backend
-    router.push("/login");
+    try {
+      const response = await authApi.register({
+        name,
+        email,
+        password,
+        role
+      });
+      if (response.success) {
+        router.push("/login");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
+    }
   };
 
   return (
@@ -70,8 +83,8 @@ export default function Register() {
               onChange={(e) => setRole(e.target.value)}
               className="w-full border border-gray-300 p-2.5 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             >
-              <option value="MEMBER">Team Member</option>
-              <option value="MANAGER">Project Manager</option>
+              <option value="TEAM_MEMBER">Team Member</option>
+              <option value="PROJECT_MANAGER">Project Manager</option>
               <option value="ADMIN">Administrator</option>
             </select>
           </div>

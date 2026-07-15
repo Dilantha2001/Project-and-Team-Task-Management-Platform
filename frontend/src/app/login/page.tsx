@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+import { authApi } from "@/services/api";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -32,22 +33,26 @@ export default function Login() {
     setIsLoading(true);
     setError("");
     
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Dummy login validation
-    let userRole = "TEAM_MEMBER";
-    if (data.email.includes("admin")) userRole = "ADMIN";
-    else if (data.email.includes("manager")) userRole = "PROJECT_MANAGER";
-    
-    localStorage.setItem("token", "dummy-token-123");
-    localStorage.setItem("role", userRole);
-    
-    if (userRole === "ADMIN") router.push("/dashboard/admin");
-    else if (userRole === "PROJECT_MANAGER") router.push("/dashboard/manager");
-    else router.push("/dashboard/member");
-    
-    setIsLoading(false);
+    try {
+      const response = await authApi.login({
+        email: data.email,
+        password: data.password
+      });
+
+      if (response.success && response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("role", response.user.role);
+        
+        const userRole = response.user.role;
+        if (userRole === "ADMIN") router.push("/dashboard/admin");
+        else if (userRole === "PROJECT_MANAGER") router.push("/dashboard/manager");
+        else router.push("/dashboard/member");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to login. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

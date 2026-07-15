@@ -1,108 +1,60 @@
-import { User, Project, Task, Role, TaskStatus, mockUsers, mockProjects, mockTasks } from "@/lib/mockData";
+import axios from 'axios';
+import { User, Project, Task, Role, TaskStatus } from "@/lib/mockData"; // Reusing types for now
 
-// Simulate network delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-// Helper to get data from localStorage or fallback to initial mock data
-const getStoredData = <T>(key: string, initialData: T): T => {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      return JSON.parse(stored) as T;
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+apiClient.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    // Initialize if not present
-    localStorage.setItem(key, JSON.stringify(initialData));
   }
-  return initialData;
-};
+  return config;
+});
 
-// Helper to save data to localStorage
-const saveData = <T>(key: string, data: T) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(key, JSON.stringify(data));
-  }
+export const authApi = {
+  login: async (credentials: any) => {
+    const response = await apiClient.post('/auth/login', credentials);
+    return response.data;
+  },
+  register: async (userData: any) => {
+    const response = await apiClient.post('/auth/register', userData);
+    return response.data;
+  },
 };
 
 export const api = {
-  // Users
   getUsers: async (): Promise<User[]> => {
-    await delay(300);
-    return getStoredData("mock_users", mockUsers);
+    const response = await apiClient.get('/users');
+    return response.data.data;
   },
-  
-  createUser: async (userData: Omit<User, "id" | "avatarUrl">): Promise<User> => {
-    await delay(500);
-    const users = getStoredData("mock_users", mockUsers);
-    const newUser: User = {
-      ...userData,
-      id: `u${users.length + 1}`,
-      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}`,
-    };
-    saveData("mock_users", [...users, newUser]);
-    return newUser;
-  },
-
-  updateUserRole: async (id: string, role: Role): Promise<void> => {
-    await delay(200);
-    const users = getStoredData("mock_users", mockUsers);
-    saveData("mock_users", users.map(u => (u.id === id ? { ...u, role } : u)));
-  },
-
-  deleteUser: async (id: string): Promise<void> => {
-    await delay(300);
-    const users = getStoredData("mock_users", mockUsers);
-    saveData("mock_users", users.filter(u => u.id !== id));
-  },
-
-  // Projects
   getProjects: async (): Promise<Project[]> => {
-    await delay(300);
-    return getStoredData("mock_projects", mockProjects);
+    const response = await apiClient.get('/projects');
+    return response.data.data;
   },
-
   createProject: async (projectData: Omit<Project, "id">): Promise<Project> => {
-    await delay(500);
-    const projects = getStoredData("mock_projects", mockProjects);
-    const newProject: Project = {
-      ...projectData,
-      id: `p${projects.length + 1}`,
-    };
-    saveData("mock_projects", [...projects, newProject]);
-    return newProject;
+    const response = await apiClient.post('/projects', projectData);
+    return response.data.data;
   },
-
-  deleteProject: async (id: string): Promise<void> => {
-    await delay(300);
-    const projects = getStoredData("mock_projects", mockProjects);
-    saveData("mock_projects", projects.filter(p => p.id !== id));
-  },
-
-  // Tasks
   getTasks: async (): Promise<Task[]> => {
-    await delay(300);
-    return getStoredData("mock_tasks", mockTasks);
+    const response = await apiClient.get('/tasks');
+    return response.data.data;
   },
-
   createTask: async (taskData: Omit<Task, "id">): Promise<Task> => {
-    await delay(500);
-    const tasks = getStoredData("mock_tasks", mockTasks);
-    const newTask: Task = {
-      ...taskData,
-      id: `t${tasks.length + 1}`,
-    };
-    saveData("mock_tasks", [...tasks, newTask]);
-    return newTask;
+    const response = await apiClient.post('/tasks', taskData);
+    return response.data.data;
   },
-
   updateTaskStatus: async (id: string, status: TaskStatus): Promise<void> => {
-    await delay(200);
-    const tasks = getStoredData("mock_tasks", mockTasks);
-    saveData("mock_tasks", tasks.map(t => (t.id === id ? { ...t, status } : t)));
-  },
-
-  deleteTask: async (id: string): Promise<void> => {
-    await delay(300);
-    const tasks = getStoredData("mock_tasks", mockTasks);
-    saveData("mock_tasks", tasks.filter(t => t.id !== id));
+    await apiClient.patch(`/tasks/${id}/status`, { status });
   },
 };
+
+export default apiClient;
