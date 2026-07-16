@@ -4,6 +4,15 @@
 
 CyphTask is the complete SaaS platform for project managers to assign tasks, track deadlines, and collaborate without friction. It features role-based access control and real-time dashboard analytics.
 
+## 🔗 Live Demo
+**Website:** [https://cyphtask-frontend.vercel.app/](https://cyphtask-frontend.vercel.app/)
+
+## 🔑 Demo Credentials
+
+To test the application, you can use the following Admin account:
+- **Email:** `admin@gmail.com`
+- **Password:** `admin123`
+
 ## 🚀 Features
 
 - **Role-Based Access Control**: Secure dashboards tailored for Admins, Project Managers, and Team Members.
