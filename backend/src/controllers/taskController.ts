@@ -79,7 +79,7 @@ export const createTask = async (req: AuthRequest, res: Response, next: NextFunc
     res.status(201).json({ success: true, data: task });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ success: false, message: 'Validation error', errors: error.errors });
+      res.status(400).json({ success: false, message: 'Validation error', errors: error.issues });
       return;
     }
     next(error);
@@ -88,7 +88,7 @@ export const createTask = async (req: AuthRequest, res: Response, next: NextFunc
 
 export const updateTaskStatus = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const validatedData = updateTaskStatusSchema.parse(req.body);
 
     const task = await prisma.task.findUnique({ where: { id } });
@@ -125,7 +125,7 @@ export const updateTaskStatus = async (req: AuthRequest, res: Response, next: Ne
     res.status(200).json({ success: true, data: updatedTask });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ success: false, message: 'Validation error', errors: error.errors });
+      res.status(400).json({ success: false, message: 'Validation error', errors: error.issues });
       return;
     }
     next(error);

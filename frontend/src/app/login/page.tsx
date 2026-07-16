@@ -65,31 +65,22 @@ export default function Login() {
         <div className="absolute bottom-[10%] right-[10%] w-[50%] h-[50%] rounded-full bg-violet-500/20 blur-3xl"></div>
         
         
-        <div className="relative z-10 flex flex-col justify-between h-full p-16 w-full">
+        <div className="relative z-10 flex flex-col h-full p-16 w-full">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-white/10">
-              <span className="text-indigo-900 font-bold text-xl">N</span>
+              <span className="text-indigo-900 font-bold text-xl">C</span>
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">Nexus</span>
+            <span className="text-2xl font-bold text-white tracking-tight">CyphTask</span>
           </div>
 
-          <div className="space-y-6 max-w-lg">
+          <div className="flex-1 flex flex-col justify-center max-w-lg space-y-6">
             <h1 className="text-5xl font-bold text-white leading-[1.1] tracking-tight">
               Manage your teams <br/>
               <span className="text-indigo-300">with precision.</span>
             </h1>
             <p className="text-lg text-indigo-100/80 leading-relaxed font-light">
-              Nexus is the complete SaaS platform for project managers to assign tasks, track deadlines, and collaborate without friction.
+              CyphTask is the complete SaaS platform for project managers to assign tasks, track deadlines, and collaborate without friction.
             </p>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <div className="flex -space-x-3">
-              <img src="https://ui-avatars.com/api/?name=Alice&background=10b981&color=fff" alt="" className="w-10 h-10 rounded-full border-2 border-indigo-900"/>
-              <img src="https://ui-avatars.com/api/?name=Bob&background=f59e0b&color=fff" alt="" className="w-10 h-10 rounded-full border-2 border-indigo-900"/>
-              <img src="https://ui-avatars.com/api/?name=Charlie&background=ef4444&color=fff" alt="" className="w-10 h-10 rounded-full border-2 border-indigo-900"/>
-            </div>
-            <p className="text-sm text-indigo-200">Join <span className="font-semibold text-white">4,000+</span> teams using Nexus.</p>
           </div>
         </div>
       </div>
@@ -102,9 +93,9 @@ export default function Login() {
             
             <div className="lg:hidden flex items-center gap-3 mb-8">
               <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
-                <span className="text-white font-bold text-xl">N</span>
+                <span className="text-white font-bold text-xl">C</span>
               </div>
-              <span className="text-2xl font-bold text-gray-900 tracking-tight">Nexus</span>
+              <span className="text-2xl font-bold text-gray-900 tracking-tight">CyphTask</span>
             </div>
             
             <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome back</h2>

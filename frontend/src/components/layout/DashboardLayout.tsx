@@ -167,9 +167,9 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
         <div className="h-16 flex items-center px-6 border-b border-gray-100">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
-              <span className="text-white font-bold text-sm">N</span>
+              <span className="text-white font-bold text-sm">C</span>
             </div>
-            <span className="text-xl font-bold text-gray-900 tracking-tight">Nexus</span>
+            <span className="text-xl font-bold text-gray-900 tracking-tight">CyphTask</span>
           </div>
         </div>
         
@@ -208,9 +208,9 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
             <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
-                  <span className="text-white font-bold text-sm">N</span>
+                  <span className="text-white font-bold text-sm">C</span>
                 </div>
-                <span className="text-xl font-bold text-gray-900 tracking-tight">Nexus</span>
+                <span className="text-xl font-bold text-gray-900 tracking-tight">CyphTask</span>
               </div>
               <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-400 hover:text-gray-600 p-1">
                 <X className="w-5 h-5" />
