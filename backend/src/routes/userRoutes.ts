@@ -8,7 +8,7 @@ router.use(authenticate);
 
 router.get('/', authorize(['ADMIN', 'PROJECT_MANAGER']), getUsers);
 router.get('/:id', getUserById);
-router.put('/:id', authorize(['ADMIN']), updateUser);
+router.put('/:id', updateUser);
 router.patch('/:id/role', authorize(['ADMIN']), updateUserRole);
 router.delete('/:id', authorize(['ADMIN']), deleteUser);
 

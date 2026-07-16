@@ -1,23 +1,88 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Camera, Mail, User, Shield, Bell } from "lucide-react";
+import { Camera, Shield, User } from "lucide-react";
+import { api } from "@/services/api";
 
 export default function ProfilePage() {
-  const role = typeof window !== "undefined" ? localStorage.getItem("role") as any || "TEAM_MEMBER" : "TEAM_MEMBER";
+  const [role, setRole] = useState("TEAM_MEMBER");
+  const [userId, setUserId] = useState<string | null>(null);
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    email: ""
+  });
   
   const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error", text: string } | null>(null);
+  
+  // Custom simple jwt decoder since we don't have jwt-decode library
+  const parseJwt = (token: string) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      return null;
+    }
+  };
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchUser = async () => {
+      const storedRole = localStorage.getItem("role") || "TEAM_MEMBER";
+      const token = localStorage.getItem("token");
+      
+      setRole(storedRole);
+      
+      if (token) {
+        const decoded = parseJwt(token);
+        if (decoded && decoded.id) {
+          setUserId(decoded.id);
+          try {
+            // This relies on api.getUserById which doesn't exist on frontend yet. Let's add it.
+            // Wait, we need to add getUserById to api.ts
+            const response = await api.getUserById(decoded.id);
+            if (response) {
+              setFormData({
+                name: response.name,
+                email: response.email
+              });
+            }
+          } catch (err) {
+            console.error("Failed to load user profile", err);
+          }
+        }
+      }
+    };
+    
+    fetchUser();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userId) return;
+    
     setIsSaving(true);
-    setTimeout(() => setIsSaving(false), 800);
+    setMessage(null);
+    
+    try {
+      await api.updateUser(userId, formData);
+      setMessage({ type: "success", text: "Profile updated successfully." });
+    } catch (err) {
+      console.error(err);
+      setMessage({ type: "error", text: "Failed to update profile." });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
-    <DashboardLayout role={role}>
+    <DashboardLayout role={role as any}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Account Settings</h1>
         <p className="text-sm text-gray-500 mt-1">Manage your profile information and security preferences.</p>
@@ -31,7 +96,7 @@ export default function ProfilePage() {
               <div className="flex flex-col items-center">
                 <div className="relative mb-4 group cursor-pointer">
                   <img 
-                    src={`https://ui-avatars.com/api/?name=${role.replace('_', '+')}&background=6366f1&color=fff&size=128`} 
+                    src={`https://ui-avatars.com/api/?name=${formData.name ? formData.name.replace(' ', '+') : role.replace('_', '+')}&background=6366f1&color=fff&size=128`} 
                     alt="Profile" 
                     className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover transition-transform group-hover:scale-105"
                   />
@@ -39,17 +104,10 @@ export default function ProfilePage() {
                     <Camera className="w-4 h-4" />
                   </div>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">{role.replace('_', ' ')}</h2>
-                <p className="text-sm text-gray-500 mt-1">user@nexus.com</p>
-                <div className="mt-6 w-full pt-6 border-t border-gray-100 flex justify-center space-x-8">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-gray-900">12</p>
-                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mt-1">Projects</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-gray-900">48</p>
-                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mt-1">Tasks</p>
-                  </div>
+                <h2 className="text-xl font-bold text-gray-900">{formData.name || role.replace('_', ' ')}</h2>
+                <p className="text-sm text-gray-500 mt-1">{formData.email}</p>
+                <div className="mt-4 inline-block bg-indigo-50 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                  {role.replace('_', ' ')}
                 </div>
               </div>
             </CardContent>
@@ -86,83 +144,45 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
+              
+              {message && (
+                <div className={`mb-6 p-4 rounded-xl text-sm border flex items-start ${message.type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
+                  {message.text}
+                </div>
+              )}
+              
               <form onSubmit={handleSave} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                     <input 
                       type="text" 
-                      defaultValue="John"
-                      className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                    <input 
-                      type="text" 
-                      defaultValue="Doe"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all"
                     />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <div className="relative">
-                      <Mail className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <input 
-                        type="email" 
-                        defaultValue="user@nexus.com"
-                        className="w-full border border-gray-200 pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                    <textarea 
-                      rows={3}
-                      defaultValue="Frontend developer specializing in React and Next.js."
-                      className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all resize-none"
-                    ></textarea>
+                    <input 
+                      type="email" 
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all"
+                    />
                   </div>
                 </div>
-                
-                <div className="flex justify-end pt-4 border-t border-gray-100">
+
+                <div className="pt-6 border-t border-gray-100 flex justify-end">
                   <button 
-                    type="submit"
-                    disabled={isSaving}
-                    className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-70 flex items-center"
+                    type="submit" 
+                    disabled={isSaving || !userId}
+                    className="bg-indigo-600 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-100 transition-all disabled:opacity-70 flex items-center shadow-sm hover:shadow"
                   >
                     {isSaving ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </form>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="border-b border-gray-100">
-              <CardTitle className="flex items-center">
-                <Bell className="w-5 h-5 mr-2 text-gray-400" /> Notifications
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {[
-                  { title: "Email Notifications", desc: "Receive email updates about project changes." },
-                  { title: "Task Assignments", desc: "Get notified when you are assigned a new task." },
-                  { title: "Weekly Reports", desc: "Receive a weekly digest of team progress." }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{item.title}</p>
-                      <p className="text-xs text-gray-500">{item.desc}</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" defaultChecked={i !== 2} />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                    </label>
-                  </div>
-                ))}
-              </div>
             </CardContent>
           </Card>
         </div>

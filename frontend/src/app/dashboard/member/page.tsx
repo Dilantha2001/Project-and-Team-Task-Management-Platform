@@ -5,24 +5,54 @@ import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { useMockData } from "@/context/MockDataContext";
-import { Clock, MoreHorizontal, CheckCircle2, Circle, ArrowRightCircle } from "lucide-react";
-import { TaskStatus, Task } from "@/lib/mockData";
+import { api } from "@/services/api";
+import { Clock, CheckCircle2, Circle, ArrowRightCircle } from "lucide-react";
+import { TaskStatus } from "@/lib/mockData";
+
+// Define a type for the task returned by the API which includes the joined project name
+type ApiTask = {
+  id: string;
+  title: string;
+  description?: string;
+  status: TaskStatus;
+  projectId: string;
+  assigneeId?: string;
+  dueDate?: string;
+  project?: {
+    name: string;
+  };
+};
 
 export default function MemberDashboard() {
   const router = useRouter();
-  // Assume John Developer is logged in for mock purposes
-  const [userId] = useState("u3"); 
-  const { tasks, projects, updateTaskStatus } = useMockData();
+  const [tasks, setTasks] = useState<ApiTask[]>([]);
 
   useEffect(() => {
     const role = localStorage.getItem("role");
     if (role !== "TEAM_MEMBER") {
       router.push("/login");
+    } else {
+      fetchTasks();
     }
   }, [router]);
 
-  const assignedTasks = tasks.filter(t => t.assigneeId === userId);
+  const fetchTasks = async () => {
+    try {
+      const data = await api.getTasks();
+      setTasks(data as ApiTask[]);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateStatus = async (id: string, newStatus: TaskStatus) => {
+    try {
+      await api.updateTaskStatus(id, newStatus);
+      setTasks(tasks.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <DashboardLayout role="TEAM_MEMBER">
@@ -46,11 +76,11 @@ export default function MemberDashboard() {
               To Do
             </h3>
             <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-              {assignedTasks.filter(t => t.status === "TODO").length}
+              {tasks.filter(t => t.status === "TODO").length}
             </span>
           </div>
-          {assignedTasks.filter(t => t.status === "TODO").map(task => (
-            <TaskCard key={task.id} task={task} projects={projects} updateStatus={updateTaskStatus} />
+          {tasks.filter(t => t.status === "TODO").map(task => (
+            <TaskCard key={task.id} task={task} updateStatus={handleUpdateStatus} />
           ))}
         </div>
 
@@ -62,11 +92,11 @@ export default function MemberDashboard() {
               In Progress
             </h3>
             <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-              {assignedTasks.filter(t => t.status === "IN_PROGRESS").length}
+              {tasks.filter(t => t.status === "IN_PROGRESS").length}
             </span>
           </div>
-          {assignedTasks.filter(t => t.status === "IN_PROGRESS").map(task => (
-            <TaskCard key={task.id} task={task} projects={projects} updateStatus={updateTaskStatus} />
+          {tasks.filter(t => t.status === "IN_PROGRESS").map(task => (
+            <TaskCard key={task.id} task={task} updateStatus={handleUpdateStatus} />
           ))}
         </div>
 
@@ -78,11 +108,11 @@ export default function MemberDashboard() {
               Completed
             </h3>
             <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-              {assignedTasks.filter(t => t.status === "DONE").length}
+              {tasks.filter(t => t.status === "DONE").length}
             </span>
           </div>
-          {assignedTasks.filter(t => t.status === "DONE").map(task => (
-            <TaskCard key={task.id} task={task} projects={projects} updateStatus={updateTaskStatus} />
+          {tasks.filter(t => t.status === "DONE").map(task => (
+            <TaskCard key={task.id} task={task} updateStatus={handleUpdateStatus} />
           ))}
         </div>
       </div>
@@ -90,42 +120,42 @@ export default function MemberDashboard() {
   );
 }
 
-function TaskCard({ task, projects, updateStatus }: { task: Task, projects: any[], updateStatus: (id: string, s: TaskStatus) => void }) {
-  const project = projects.find(p => p.id === task.projectId);
-
+function TaskCard({ task, updateStatus }: { task: ApiTask, updateStatus: (id: string, s: TaskStatus) => void }) {
   return (
-    <Card className="hover:shadow-md transition-all group cursor-pointer border-l-[3px] border-l-indigo-500 relative">
+    <Card className={`hover:shadow-md transition-all group cursor-pointer border-l-[3px] relative ${
+      task.status === "DONE" ? "border-l-emerald-500" : 
+      task.status === "IN_PROGRESS" ? "border-l-blue-500" : "border-l-indigo-500"
+    }`}>
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
-          <Badge variant="info">
-            {project?.name || "Unknown"}
+          <Badge variant={task.status === "DONE" ? "success" : task.status === "IN_PROGRESS" ? "info" : "neutral"}>
+            {task.project?.name || "No Project"}
           </Badge>
-          
           <select 
-            value={task.status}
+            value={task.status} 
             onChange={(e) => updateStatus(task.id, e.target.value as TaskStatus)}
-            className="text-xs border border-gray-200 rounded p-1 text-gray-600 bg-gray-50 focus:ring-indigo-500 hover:bg-gray-100 outline-none"
+            onClick={(e) => e.stopPropagation()}
+            className={`px-2 py-1 rounded-full text-[10px] font-semibold outline-none cursor-pointer border ${
+              task.status === "DONE" ? "bg-green-50 text-green-700 border-green-200" : 
+              task.status === "IN_PROGRESS" ? "bg-blue-50 text-blue-700 border-blue-200" : 
+              "bg-orange-50 text-orange-700 border-orange-200"
+            }`}
           >
-            <option value="TODO">To Do</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="DONE">Done</option>
+            <option value="TODO">TODO</option>
+            <option value="IN_PROGRESS">IN PROGRESS</option>
+            <option value="DONE">DONE</option>
           </select>
-
         </div>
-        <h4 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors text-sm">
-          {task.title}
-        </h4>
-        <p className="text-xs text-gray-500 mt-2 line-clamp-2">
-          {task.description}
-        </p>
-        
-        <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-          <div className="flex items-center font-medium">
-            <Clock className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
-            {new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-          </div>
-          <div className="w-6 h-6 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-[10px] font-bold text-indigo-700">
-            JD
+        <h4 className="font-semibold text-gray-900 leading-snug mb-1.5">{task.title}</h4>
+        {task.description && (
+          <p className="text-sm text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+            {task.description}
+          </p>
+        )}
+        <div className="flex items-center justify-between text-xs font-medium text-gray-500">
+          <div className="flex items-center bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+            <Clock className="w-3.5 h-3.5 mr-1.5 text-gray-400" />
+            {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Due Date'}
           </div>
         </div>
       </CardContent>

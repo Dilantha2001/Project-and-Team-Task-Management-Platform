@@ -68,9 +68,20 @@ export const updateUser = async (req: AuthRequest, res: Response, next: NextFunc
     const { id } = req.params;
     const { name, email, role } = req.body;
 
+    if (req.user?.role !== 'ADMIN' && req.user?.id !== id) {
+      res.status(403).json({ success: false, message: 'Not authorized to update this user' });
+      return;
+    }
+
+    const updateData: any = { name, email };
+    // Only admins can update the role
+    if (req.user?.role === 'ADMIN' && role) {
+      updateData.role = role;
+    }
+
     const user = await prisma.user.update({
       where: { id },
-      data: { name, email, role },
+      data: updateData,
       select: { id: true, name: true, email: true, role: true }
     });
 

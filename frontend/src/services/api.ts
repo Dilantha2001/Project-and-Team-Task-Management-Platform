@@ -36,6 +36,10 @@ export const api = {
     const response = await apiClient.get('/users');
     return response.data.data;
   },
+  getUserById: async (id: string): Promise<User> => {
+    const response = await apiClient.get(`/users/${id}`);
+    return response.data.data;
+  },
   createUser: async (userData: any): Promise<User> => {
     // Admins creating a user is basically registering them
     const response = await apiClient.post('/auth/register', userData);

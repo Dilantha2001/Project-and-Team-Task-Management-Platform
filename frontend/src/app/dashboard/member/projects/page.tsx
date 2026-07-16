@@ -10,13 +10,10 @@ import { Project, User } from "@/lib/mockData";
 
 export default function MemberProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-
   useEffect(() => {
     const loadData = async () => {
-      const [p, u] = await Promise.all([api.getProjects(), api.getUsers()]);
-      setProjects(p);
-      setUsers(u);
+      const p = await api.getProjects();
+      setProjects(p as any[]); // API returns projects with manager object
     };
     loadData();
   }, []);
@@ -54,12 +51,12 @@ export default function MemberProjectsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {projects.map((project) => {
-                const manager = users.find(u => u.id === project.managerId);
+              {projects.map((project: any) => {
+                const managerName = project.manager?.name || "N/A";
                 return (
                   <tr key={project.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 font-medium text-gray-900">{project.name}</td>
-                    <td className="px-6 py-4 text-gray-500">{manager?.name || "N/A"}</td>
+                    <td className="px-6 py-4 text-gray-500">{managerName}</td>
                     <td className="px-6 py-4">
                       <Badge variant={project.status === "ACTIVE" ? "success" : "neutral"}>
                         {project.status.replace("_", " ")}
