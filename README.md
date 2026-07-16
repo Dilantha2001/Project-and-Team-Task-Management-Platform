@@ -59,11 +59,11 @@ CyphTask is the complete SaaS platform for project managers to assign tasks, tra
    npm run dev
    ```
    ## 📸 Screenshots
-
+![Team Collaboration](./Public/Screenshot%202026-07-16%20141552.png)
 ![Dashboard Overview](./Public/Screenshot%202026-07-16%20141502.png)
 ![Projects View](./Public/Screenshot%202026-07-16%20141513.png)
 ![Task Management](./Public/Screenshot%202026-07-16%20141536.png)
-![Team Collaboration](./Public/Screenshot%202026-07-16%20141552.png)
+
 
 
 4. **Access the application**:
