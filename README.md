@@ -1,6 +1,7 @@
 # CyphTask - Project and Team Task Management Platform
 
-<video src="./DemoVideo.mp4" controls="controls" width="100%"></video>
+## 📹 Demo Video
+🔗 **[Watch Application Demo Video on Google Drive](https://drive.google.com/file/d/1Bw11r_zm4B9KP8P4DjZEGJarepOK2_Dk/view?usp=drive_link)**
 
 **Manage your teams with precision.**
 
@@ -49,36 +50,5 @@ To test the application, you can use the following Admin account:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/Dilantha2001/Project-and-Team-Task-Management-Platform.git
+   git clone [https://github.com/Dilantha2001/Project-and-Team-Task-Management-Platform.git](https://github.com/Dilantha2001/Project-and-Team-Task-Management-Platform.git)
    cd Project-and-Team-Task-Management-Platform
-   ```
-
-2. **Setup the Backend**:
-   ```bash
-   cd backend
-   npm install
-   # Create a .env file based on .env.example
-   npx prisma generate
-   npx prisma db push
-   npm run dev
-   ```
-
-3. **Setup the Frontend**:
-   ```bash
-   cd ../frontend
-   npm install
-   npm run dev
-   ```
-   ## 📸 Screenshots
-![Team Collaboration](./Public/Screenshot%202026-07-16%20141552.png)
-![Dashboard Overview](./Public/Screenshot%202026-07-16%20141502.png)
-![Projects View](./Public/Screenshot%202026-07-16%20141513.png)
-![Task Management](./Public/Screenshot%202026-07-16%20141536.png)
-
-
-
-4. **Access the application**:
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 📄 License
-This project is licensed under the MIT License.
