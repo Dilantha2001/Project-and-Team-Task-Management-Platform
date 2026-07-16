@@ -10,7 +10,6 @@ const registerSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
-  role: z.enum(['ADMIN', 'PROJECT_MANAGER', 'TEAM_MEMBER']).optional(),
 });
 
 const loginSchema = z.object({
@@ -33,12 +32,15 @@ export const register = async (req: Request, res: Response, next: NextFunction):
 
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
+    const userCount = await prisma.user.count();
+    const assignedRole = userCount === 0 ? 'ADMIN' : 'TEAM_MEMBER';
+
     const user = await prisma.user.create({
       data: {
         name: validatedData.name,
         email: validatedData.email,
         password: hashedPassword,
-        role: validatedData.role || 'TEAM_MEMBER',
+        role: assignedRole,
       },
       select: {
         id: true,

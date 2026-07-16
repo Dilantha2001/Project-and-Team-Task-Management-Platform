@@ -201,8 +201,8 @@ export default function Login() {
           
           <p className="text-center text-sm text-gray-500 font-medium">
             Don't have an account?{' '}
-            <a href="#" className="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors">
-              Request access
+            <a href="/register" className="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors">
+              Sign up
             </a>
           </p>
         </div>

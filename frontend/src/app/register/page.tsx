@@ -9,7 +9,6 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("TEAM_MEMBER");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -21,8 +20,7 @@ export default function Register() {
       const response = await authApi.register({
         name,
         email,
-        password,
-        role
+        password
       });
       if (response.success) {
         router.push("/login");
@@ -75,18 +73,6 @@ export default function Register() {
               placeholder="••••••••"
               required 
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role (For testing purposes)</label>
-            <select 
-              value={role} 
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full border border-gray-300 p-2.5 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-            >
-              <option value="TEAM_MEMBER">Team Member</option>
-              <option value="PROJECT_MANAGER">Project Manager</option>
-              <option value="ADMIN">Administrator</option>
-            </select>
           </div>
           <button type="submit" className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 transition-all shadow-sm">
             Sign Up
