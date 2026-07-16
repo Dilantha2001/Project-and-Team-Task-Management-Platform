@@ -24,7 +24,7 @@ export const getNotifications = async (req: AuthRequest, res: Response, next: Ne
 
 export const markAsRead = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const userId = req.user?.id;
 
     if (!userId) {

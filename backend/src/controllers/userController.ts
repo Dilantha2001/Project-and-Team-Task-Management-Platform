@@ -22,7 +22,7 @@ export const getUsers = async (req: AuthRequest, res: Response, next: NextFuncti
 
 export const getUserById = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const user = await prisma.user.findUnique({
       where: { id },
@@ -48,7 +48,7 @@ export const getUserById = async (req: AuthRequest, res: Response, next: NextFun
 
 export const updateUserRole = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { role } = req.body;
 
     const user = await prisma.user.update({
@@ -65,7 +65,7 @@ export const updateUserRole = async (req: AuthRequest, res: Response, next: Next
 
 export const updateUser = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { name, email, role } = req.body;
 
     if (req.user?.role !== 'ADMIN' && req.user?.id !== id) {
@@ -93,7 +93,7 @@ export const updateUser = async (req: AuthRequest, res: Response, next: NextFunc
 
 export const deleteUser = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     await prisma.user.delete({
       where: { id }

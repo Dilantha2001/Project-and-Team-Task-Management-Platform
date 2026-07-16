@@ -64,7 +64,7 @@ export const createProject = async (req: AuthRequest, res: Response, next: NextF
     res.status(201).json({ success: true, data: project });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ success: false, message: 'Validation error', errors: error.errors });
+      res.status(400).json({ success: false, message: 'Validation error', errors: error.issues });
       return;
     }
     next(error);
