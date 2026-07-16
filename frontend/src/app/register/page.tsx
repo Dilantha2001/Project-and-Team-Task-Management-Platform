@@ -25,7 +25,7 @@ export default function Register() {
       if (response.success) {
         router.push("/login");
       }
-    } catch (err: any) {
+    } catch (err: Record<string, unknown>) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
     }
   };
@@ -82,3 +82,4 @@ export default function Register() {
     </div>
   );
 }
+

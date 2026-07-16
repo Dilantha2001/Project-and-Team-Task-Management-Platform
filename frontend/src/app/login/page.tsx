@@ -191,7 +191,7 @@ export default function Login() {
           </form>
           
           <p className="text-center text-sm text-gray-500 font-medium">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <a href="/register" className="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors">
               Sign up
             </a>
@@ -201,3 +201,4 @@ export default function Login() {
     </div>
   );
 }
+

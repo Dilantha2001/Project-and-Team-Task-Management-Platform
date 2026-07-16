@@ -38,3 +38,4 @@ export function CardContent({ children, className = "", ...props }: CardProps) {
     </div>
   );
 }
+

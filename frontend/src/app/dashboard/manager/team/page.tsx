@@ -24,8 +24,8 @@ export default function ManagerTeamPage() {
         
         // Show only team members who are assigned to at least one of this manager's projects
         setUsers(u.filter((user: any) => user.role === "TEAM_MEMBER" && myProjectMemberIds.has(user.id)));
-      } catch (e) {
-        console.error(e);
+      } catch {
+        console.error("error loading team data");
       }
     };
     loadData();
@@ -86,3 +86,4 @@ export default function ManagerTeamPage() {
     </DashboardLayout>
   );
 }
+

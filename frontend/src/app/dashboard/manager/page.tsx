@@ -34,7 +34,7 @@ export default function ManagerDashboard() {
       ]);
       setProjects(projs);
       setUsers(usrs);
-    } catch (e) {
+    } catch {
       console.error(e);
     }
   };
@@ -297,3 +297,4 @@ export default function ManagerDashboard() {
     </DashboardLayout>
   );
 }
+

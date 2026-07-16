@@ -14,6 +14,15 @@ export default function CalendarPage() {
   
   const [currentDate, setCurrentDate] = useState(new Date());
   
+  async function fetchTasks() {
+    try {
+      const data = await api.getTasks();
+      setTasks(data || []);
+    } catch {
+      console.error("error fetching tasks");
+    }
+  }
+
   useEffect(() => {
     const role = localStorage.getItem("role");
     if (role !== "TEAM_MEMBER") {
@@ -22,15 +31,6 @@ export default function CalendarPage() {
       fetchTasks();
     }
   }, [router]);
-
-  const fetchTasks = async () => {
-    try {
-      const data = await api.getTasks();
-      setTasks(data || []);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -158,3 +158,4 @@ export default function CalendarPage() {
     </DashboardLayout>
   );
 }
+

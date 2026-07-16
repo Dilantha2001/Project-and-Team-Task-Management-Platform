@@ -27,7 +27,7 @@ export default function ProfilePage() {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
       return JSON.parse(jsonPayload);
-    } catch (e) {
+    } catch {
       return null;
     }
   };
@@ -188,3 +188,4 @@ export default function ProfilePage() {
     </DashboardLayout>
   );
 }
+

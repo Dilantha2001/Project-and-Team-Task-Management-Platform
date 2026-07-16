@@ -15,3 +15,4 @@ export const getAvatarGradient = (name: string) => {
   const index = Math.abs(hash) % gradients.length;
   return gradients[index];
 };
+

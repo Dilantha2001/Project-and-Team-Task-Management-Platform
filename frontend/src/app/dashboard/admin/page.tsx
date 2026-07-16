@@ -87,7 +87,7 @@ export default function AdminDashboard() {
     <DashboardLayout role="ADMIN">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">System Overview</h1>
-        <p className="text-sm text-gray-500">Monitor your entire platform's health and statistics.</p>
+        <p className="text-sm text-gray-500">Monitor your entire platform&apos;s health and statistics.</p>
       </div>
 
       
@@ -277,3 +277,4 @@ export default function AdminDashboard() {
     </DashboardLayout>
   );
 }
+

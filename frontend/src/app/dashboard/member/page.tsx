@@ -27,6 +27,15 @@ export default function MemberDashboard() {
   const router = useRouter();
   const [tasks, setTasks] = useState<ApiTask[]>([]);
 
+  async function fetchTasks() {
+    try {
+      const data = await api.getTasks();
+      setTasks(data as ApiTask[]);
+    } catch {
+      console.error("Failed to fetch tasks");
+    }
+  };
+
   useEffect(() => {
     const role = localStorage.getItem("role");
     if (role !== "TEAM_MEMBER") {
@@ -35,15 +44,6 @@ export default function MemberDashboard() {
       fetchTasks();
     }
   }, [router]);
-
-  const fetchTasks = async () => {
-    try {
-      const data = await api.getTasks();
-      setTasks(data as ApiTask[]);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const handleUpdateStatus = async (id: string, newStatus: TaskStatus) => {
     try {
@@ -162,3 +162,4 @@ function TaskCard({ task, updateStatus }: { task: ApiTask, updateStatus: (id: st
     </Card>
   );
 }
+

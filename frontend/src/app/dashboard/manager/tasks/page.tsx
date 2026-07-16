@@ -34,7 +34,7 @@ export default function ManagerTasksPage() {
         setTasks(t || []);
         setProjects(p || []);
         setUsers(u || []);
-      } catch (e) {
+      } catch {
         console.error(e);
       }
     };
@@ -118,3 +118,4 @@ export default function ManagerTasksPage() {
     </DashboardLayout>
   );
 }
+

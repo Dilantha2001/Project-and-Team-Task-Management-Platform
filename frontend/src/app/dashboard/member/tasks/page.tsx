@@ -36,7 +36,7 @@ export default function MemberTasksPage() {
   const handleUpdateStatus = async (task: Task) => {
     setIsUpdating(task.id);
     
-    let newStatus: any = "TODO";
+    let newStatus: Record<string, unknown> = "TODO";
     if (task.status === "TODO") newStatus = "IN_PROGRESS";
     else if (task.status === "IN_PROGRESS") newStatus = "DONE";
     else newStatus = "TODO";
@@ -117,3 +117,4 @@ export default function MemberTasksPage() {
     </DashboardLayout>
   );
 }
+

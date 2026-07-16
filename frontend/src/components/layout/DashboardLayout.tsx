@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, Users, FolderKanban, CheckSquare, 
-  Search, Bell, User, Calendar, FileText, Shield, LogOut, ChevronRight,
-  Command, CheckCircle2, AlertCircle, Menu, X
+  Search, Bell, User, Calendar, FileText, Shield, ChevronRight,
+  Command, Menu, X
 } from "lucide-react";
 import { api, Notification } from "@/services/api";
 
@@ -26,7 +26,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  const fetchNotifications = async () => {
+  async function fetchNotifications() {
     try {
       const data = await api.getNotifications();
       setNotifications(data);
@@ -373,3 +373,4 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     </div>
   );
 }
+

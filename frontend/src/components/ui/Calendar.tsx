@@ -121,3 +121,4 @@ export function Calendar({ events = [] }: CalendarProps) {
     </div>
   );
 }
+

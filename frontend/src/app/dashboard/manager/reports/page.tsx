@@ -13,6 +13,16 @@ export default function ReportsPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   
+  async function fetchData() {
+    try {
+      const [t, p] = await Promise.all([api.getTasks(), api.getProjects()]);
+      setTasks(t);
+      setProjects(p);
+    } catch {
+      console.error("error fetching data");
+    }
+  }
+
   useEffect(() => {
     const role = localStorage.getItem("role");
     if (role !== "PROJECT_MANAGER") {
@@ -21,16 +31,6 @@ export default function ReportsPage() {
       fetchData();
     }
   }, [router]);
-
-  const fetchData = async () => {
-    try {
-      const [t, p] = await Promise.all([api.getTasks(), api.getProjects()]);
-      setTasks(t);
-      setProjects(p);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const completedTasks = tasks.filter(t => t.status === 'DONE').length;
   const inProgressTasks = tasks.filter(t => t.status === 'IN_PROGRESS').length;
@@ -124,3 +124,4 @@ export default function ReportsPage() {
     </DashboardLayout>
   );
 }
+
