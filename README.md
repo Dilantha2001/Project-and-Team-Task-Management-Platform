@@ -12,9 +12,19 @@ CyphTask is the complete SaaS platform for project managers to assign tasks, tra
 
 ## 🔑 Demo Credentials
 
-To test the application, you can use the following Admin account:
+To test the application, you can use the following accounts based on the role you want to explore:
+
+**1. Admin Account**
 - **Email:** `admin@gmail.com`
 - **Password:** `admin123`
+
+**2. Project Manager Account**
+- **Email:** `pramudithadilantha89@gmail.com`
+- **Password:** `Dilantha123`
+
+**3. Team Member Account**
+- **Email:** `pramudithadilantha65@gmail.com`
+- **Password:** `Dilantha123`
 
 ## 🚀 Features
 
