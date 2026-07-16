@@ -11,12 +11,6 @@ CyphTask is the complete SaaS platform for project managers to assign tasks, tra
 - **Real-Time Analytics**: Monitor team progress, task completion rates, and project health.
 - **Collaboration**: Instant notifications and updates keep your team in sync.
 
-## 📸 Screenshots
-
-![Dashboard Overview](./Public/Screenshot%202026-07-16%20141502.png)
-![Projects View](./Public/Screenshot%202026-07-16%20141513.png)
-![Task Management](./Public/Screenshot%202026-07-16%20141536.png)
-![Team Collaboration](./Public/Screenshot%202026-07-16%20141552.png)
 
 ## 🛠️ Technology Stack
 
@@ -64,6 +58,13 @@ CyphTask is the complete SaaS platform for project managers to assign tasks, tra
    npm install
    npm run dev
    ```
+   ## 📸 Screenshots
+
+![Dashboard Overview](./Public/Screenshot%202026-07-16%20141502.png)
+![Projects View](./Public/Screenshot%202026-07-16%20141513.png)
+![Task Management](./Public/Screenshot%202026-07-16%20141536.png)
+![Team Collaboration](./Public/Screenshot%202026-07-16%20141552.png)
+
 
 4. **Access the application**:
    Open [http://localhost:3000](http://localhost:3000) in your browser.
