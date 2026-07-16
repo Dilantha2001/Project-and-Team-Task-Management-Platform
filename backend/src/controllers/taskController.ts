@@ -8,6 +8,7 @@ const createTaskSchema = z.object({
   description: z.string(),
   projectId: z.string().uuid(),
   assigneeId: z.string().uuid().optional(),
+  dueDate: z.string().datetime().optional(),
 });
 
 const updateTaskStatusSchema = z.object({

@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { useMockData } from "@/context/MockDataContext";
+import { api } from "@/services/api";
+import { Project, User, Task } from "@/lib/mockData";
 import { FolderKanban, Users, Filter, Download, Plus, X, CheckSquare } from "lucide-react";
-import { ProjectStatus, TaskStatus } from "@/lib/mockData";
 
 export default function ManagerDashboard() {
   const router = useRouter();
-  const { projects, users, addProject, addTask } = useMockData();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
@@ -22,6 +23,24 @@ export default function ManagerDashboard() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDesc, setNewTaskDesc] = useState("");
   const [newTaskAssignee, setNewTaskAssignee] = useState("");
+  const [newTaskDueDate, setNewTaskDueDate] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const [projs, usrs] = await Promise.all([
+        api.getProjects(),
+        api.getUsers()
+      ]);
+      setProjects(projs);
+      setUsers(usrs);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -32,20 +51,25 @@ export default function ManagerDashboard() {
 
   const teamMembers = users.filter(u => u.role === "TEAM_MEMBER");
 
-  const handleAddProject = (e: React.FormEvent) => {
+  const handleAddProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newProjectName) {
-      addProject({
-        name: newProjectName,
-        description: newProjectDesc,
-        status: "ACTIVE",
-        managerId: "u2", // Mock manager ID
-        memberIds: selectedMembers
-      });
-      setIsAddProjectOpen(false);
-      setNewProjectName("");
-      setNewProjectDesc("");
-      setSelectedMembers([]);
+      try {
+        await api.createProject({
+          name: newProjectName,
+          description: newProjectDesc,
+          status: "ACTIVE",
+          managerId: "temp", // Backend extracts from token
+          memberIds: selectedMembers
+        });
+        setIsAddProjectOpen(false);
+        setNewProjectName("");
+        setNewProjectDesc("");
+        setSelectedMembers([]);
+        fetchData();
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -57,21 +81,27 @@ export default function ManagerDashboard() {
     }
   };
 
-  const handleAddTask = (e: React.FormEvent) => {
+  const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newTaskTitle && managingProjectId) {
-      addTask({
-        title: newTaskTitle,
-        description: newTaskDesc,
-        status: "TODO",
-        projectId: managingProjectId,
-        assigneeId: newTaskAssignee || null,
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // Next week
-      });
-      setManagingProjectId(null);
-      setNewTaskTitle("");
-      setNewTaskDesc("");
-      setNewTaskAssignee("");
+      try {
+        await api.createTask({
+          title: newTaskTitle,
+          description: newTaskDesc,
+          status: "TODO",
+          projectId: managingProjectId,
+          assigneeId: newTaskAssignee || undefined,
+          dueDate: newTaskDueDate ? new Date(newTaskDueDate).toISOString() : undefined
+        });
+        setManagingProjectId(null);
+        setNewTaskTitle("");
+        setNewTaskDesc("");
+        setNewTaskAssignee("");
+        setNewTaskDueDate("");
+        fetchData();
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -129,10 +159,10 @@ export default function ManagerDashboard() {
               </p>
               <div className="flex items-center justify-between text-sm text-gray-500 pt-6">
                 <div className="flex items-center">
-                  <span className="font-semibold text-gray-900 mr-1">{project.memberIds.length}</span> Team Members
+                  <span className="font-semibold text-gray-900 mr-1">{(project.memberIds || []).length}</span> Team Members
                 </div>
                 <div className="flex -space-x-2">
-                  {project.memberIds.map((id, index) => {
+                  {(project.memberIds || []).map((id, index) => {
                     const user = users.find(u => u.id === id);
                     return user ? (
                       <img 
@@ -240,11 +270,19 @@ export default function ManagerDashboard() {
                   className="w-full border border-gray-300 p-2 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
                 >
                   <option value="">Unassigned</option>
-                  {projects.find(p => p.id === managingProjectId)?.memberIds.map(id => {
+                  {(projects.find(p => p.id === managingProjectId)?.memberIds || []).map(id => {
                     const u = users.find(user => user.id === id);
                     return u ? <option key={u.id} value={u.id}>{u.name}</option> : null;
                   })}
                 </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                <input 
+                  type="date" 
+                  value={newTaskDueDate} onChange={e => setNewTaskDueDate(e.target.value)}
+                  className="w-full border border-gray-300 p-2 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                />
               </div>
               <div className="pt-2">
                 <button type="submit" className="w-full py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition flex items-center justify-center">

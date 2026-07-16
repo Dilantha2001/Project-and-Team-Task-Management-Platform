@@ -12,9 +12,13 @@ export default function ManagerTeamPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const u = await api.getUsers();
-      // Managers usually only see team members
-      setUsers(u.filter(user => user.role === "TEAM_MEMBER"));
+      try {
+        const u = await api.getUsers().catch(() => []);
+        // Managers usually only see team members
+        setUsers(u.filter((user: any) => user.role === "TEAM_MEMBER"));
+      } catch (e) {
+        console.error(e);
+      }
     };
     loadData();
   }, []);

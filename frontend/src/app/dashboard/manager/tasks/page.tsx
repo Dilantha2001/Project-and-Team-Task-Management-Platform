@@ -13,12 +13,29 @@ export default function ManagerTasksPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
+  const handleStatusChange = async (taskId: string, newStatus: string) => {
+    try {
+      await api.updateTaskStatus(taskId, newStatus as any);
+      setTasks(tasks.map(t => t.id === taskId ? { ...t, status: newStatus as any } : t));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
-      const [t, p, u] = await Promise.all([api.getTasks(), api.getProjects(), api.getUsers()]);
-      setTasks(t);
-      setProjects(p);
-      setUsers(u);
+      try {
+        const [t, p, u] = await Promise.all([
+          api.getTasks().catch(() => []), 
+          api.getProjects().catch(() => []), 
+          api.getUsers().catch(() => [])
+        ]);
+        setTasks(t || []);
+        setProjects(p || []);
+        setUsers(u || []);
+      } catch (e) {
+        console.error(e);
+      }
     };
     loadData();
   }, []);
@@ -74,9 +91,19 @@ export default function ManagerTasksPage() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <Badge variant={task.status === "DONE" ? "success" : task.status === "IN_PROGRESS" ? "info" : "neutral"}>
-                        {task.status.replace("_", " ")}
-                      </Badge>
+                      <select 
+                        value={task.status} 
+                        onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                        className={`px-2 py-1 rounded-full text-xs font-semibold outline-none cursor-pointer border ${
+                          task.status === "DONE" ? "bg-green-50 text-green-700 border-green-200" : 
+                          task.status === "IN_PROGRESS" ? "bg-blue-50 text-blue-700 border-blue-200" : 
+                          "bg-orange-50 text-orange-700 border-orange-200"
+                        }`}
+                      >
+                        <option value="TODO">TODO</option>
+                        <option value="IN_PROGRESS">IN PROGRESS</option>
+                        <option value="DONE">DONE</option>
+                      </select>
                     </td>
                   </tr>
                 );

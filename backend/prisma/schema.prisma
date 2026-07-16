@@ -92,6 +92,8 @@ model Task {
   assigneeId  String?     @map("assignee_id") @db.Uuid
   assignee    User?       @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   
+  dueDate     DateTime?   @map("due_date") @db.Timestamp()
+
   createdAt   DateTime?   @default(now()) @map("created_at") @db.Timestamp()
   updatedAt   DateTime?   @default(now()) @updatedAt @map("updated_at") @db.Timestamp()
 
