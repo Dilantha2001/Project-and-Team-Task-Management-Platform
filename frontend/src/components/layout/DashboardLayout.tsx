@@ -26,26 +26,26 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
+  const fetchNotifications = async () => {
+    try {
+      const data = await api.getNotifications();
+      setNotifications(data);
+    } catch {
+      console.error("Failed to fetch notifications");
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000); // Polling every 30s
     return () => clearInterval(interval);
   }, []);
 
-  const fetchNotifications = async () => {
-    try {
-      const data = await api.getNotifications();
-      setNotifications(data);
-    } catch (error) {
-      console.error("Failed to fetch notifications");
-    }
-  };
-
   const markAllAsRead = async () => {
     try {
       await api.markAllNotificationsAsRead();
       setNotifications(notifications.map(n => ({ ...n, isRead: true })));
-    } catch (error) {
+    } catch {
       console.error("Failed to mark notifications as read");
     }
   };
@@ -58,7 +58,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
         router.push(link);
         setIsNotificationsOpen(false);
       }
-    } catch (error) {
+    } catch {
       console.error("Failed to mark notification as read");
     }
   };
@@ -155,7 +155,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
                   </button>
                 ))
               ) : (
-                <div className="px-3 py-4 text-sm text-gray-500 text-center">No results found for "{searchQuery}"</div>
+                <div className="px-3 py-4 text-sm text-gray-500 text-center">No results found for &quot;{searchQuery}&quot;</div>
               )}
             </div>
           </div>
