@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { FolderKanban, Search, Plus, MoreHorizontal } from "lucide-react";
 import { api } from "@/services/api";
-import { Project, User } from "@/lib/mockData";
+import { Project, User } from "@/types";
 
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { api } from "@/services/api";
-import { Task, Project } from "@/lib/mockData";
+import { Task, Project } from "@/types";
 import { BarChart3, TrendingUp, CheckCircle, Clock } from "lucide-react";
 
 export default function ReportsPage() {

@@ -74,7 +74,7 @@ export const updateUser = async (req: AuthRequest, res: Response, next: NextFunc
     }
 
     const updateData: any = { name, email };
-    // Only admins can update the role
+
     if (req.user?.role === 'ADMIN' && role) {
       updateData.role = role;
     }

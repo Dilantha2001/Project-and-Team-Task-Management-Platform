@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { api } from "@/services/api";
 import { Clock, CheckCircle2, Circle, ArrowRightCircle } from "lucide-react";
-import { TaskStatus } from "@/lib/mockData";
+import { TaskStatus } from "@/types";
 
 // Define a type for the task returned by the API which includes the joined project name
 type ApiTask = {
@@ -66,9 +66,9 @@ export default function MemberDashboard() {
         </div>
       </div>
 
-      {/* Task Board */}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {/* TODO Column */}
+        
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
             <h3 className="font-semibold text-gray-900 flex items-center text-sm">
@@ -84,7 +84,7 @@ export default function MemberDashboard() {
           ))}
         </div>
 
-        {/* IN PROGRESS Column */}
+        
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
             <h3 className="font-semibold text-gray-900 flex items-center text-sm">
@@ -100,7 +100,7 @@ export default function MemberDashboard() {
           ))}
         </div>
 
-        {/* DONE Column */}
+        
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
             <h3 className="font-semibold text-gray-900 flex items-center text-sm">

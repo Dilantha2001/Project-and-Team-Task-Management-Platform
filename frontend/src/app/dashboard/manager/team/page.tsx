@@ -5,7 +5,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Users, Search } from "lucide-react";
 import { api } from "@/services/api";
-import { User } from "@/lib/mockData";
+import { User } from "@/types";
 import { getAvatarGradient } from "@/lib/utils";
 
 export default function ManagerTeamPage() {

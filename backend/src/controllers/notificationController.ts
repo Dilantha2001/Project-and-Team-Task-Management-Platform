@@ -32,7 +32,7 @@ export const markAsRead = async (req: AuthRequest, res: Response, next: NextFunc
       return;
     }
 
-    // Verify ownership
+
     const notification = await prisma.notification.findUnique({ where: { id } });
     if (!notification || notification.userId !== userId) {
       res.status(404).json({ success: false, message: 'Notification not found' });

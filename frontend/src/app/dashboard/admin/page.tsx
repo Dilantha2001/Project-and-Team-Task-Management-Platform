@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { api } from "@/services/api";
 import { Users, FolderKanban, CheckSquare, Info, ArrowUpRight } from "lucide-react";
-import { Project, Task, User } from "@/lib/mockData";
+import { Project, Task, User } from "@/types";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
         <p className="text-sm text-gray-500">Monitor your entire platform's health and statistics.</p>
       </div>
 
-      {/* KPI Cards */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <Card>
           <CardHeader className="pb-2">
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Charts Row */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader>
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
               </PieChart>
             </ResponsiveContainer>
             
-            {/* Custom Legend */}
+            
             <div className="absolute right-8 top-1/2 -translate-y-1/2 space-y-3">
               {taskStatusData.map((entry, index) => (
                 <div key={entry.name} className="flex items-center text-sm">
@@ -228,7 +228,7 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Recent Activity Table */}
+      
       <Card>
         <CardHeader className="border-b border-gray-100 pb-4">
           <CardTitle>Recent Projects</CardTitle>

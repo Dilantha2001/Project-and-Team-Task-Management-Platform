@@ -85,7 +85,7 @@ export function Calendar({ events = [] }: CalendarProps) {
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      {/* Calendar Header */}
+      
       <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white">
         <h2 className="text-lg font-bold text-gray-900">
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
@@ -106,7 +106,7 @@ export function Calendar({ events = [] }: CalendarProps) {
         </div>
       </div>
       
-      {/* Calendar Grid */}
+      
       <div className="grid grid-cols-7 border-b border-gray-100 bg-gray-50/80">
         {days.map(day => (
           <div key={day} className="py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">

@@ -57,14 +57,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex bg-white">
-      {/* Left Side - Dynamic Hero Section */}
+      
       <div className="hidden lg:flex lg:w-1/2 relative bg-indigo-900 overflow-hidden">
-        {/* Abstract Background Elements */}
+        
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900"></div>
         <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-indigo-500/20 blur-3xl"></div>
         <div className="absolute bottom-[10%] right-[10%] w-[50%] h-[50%] rounded-full bg-violet-500/20 blur-3xl"></div>
         
-        {/* Content */}
+        
         <div className="relative z-10 flex flex-col justify-between h-full p-16 w-full">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-white/10">
@@ -94,12 +94,12 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right Side - Login Form */}
+      
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-white relative">
         <div className="w-full max-w-md space-y-8">
           
           <div className="text-left">
-            {/* Mobile Logo (hidden on desktop) */}
+            
             <div className="lg:hidden flex items-center gap-3 mb-8">
               <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
                 <span className="text-white font-bold text-xl">N</span>

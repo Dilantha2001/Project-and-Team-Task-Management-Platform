@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User, Project, Task, Role, TaskStatus } from "@/lib/mockData"; // Reusing types for now
+import { User, Project, Task, Role, TaskStatus } from "@/types"; // Reusing types for now
 
 export interface Notification {
   id: string;

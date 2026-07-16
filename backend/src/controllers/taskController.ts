@@ -53,7 +53,7 @@ export const createTask = async (req: AuthRequest, res: Response, next: NextFunc
   try {
     const validatedData = createTaskSchema.parse(req.body);
 
-    // Ensure the project belongs to the manager creating the task
+
     const project = await prisma.project.findUnique({ where: { id: validatedData.projectId } });
     if (!project || project.managerId !== req.user?.id) {
       res.status(403).json({ success: false, message: 'Not authorized to create tasks for this project' });
@@ -64,7 +64,7 @@ export const createTask = async (req: AuthRequest, res: Response, next: NextFunc
       data: validatedData,
     });
 
-    // Notify assignee if assigned
+
     if (validatedData.assigneeId && validatedData.assigneeId !== req.user?.id) {
       await prisma.notification.create({
         data: {
@@ -97,7 +97,7 @@ export const updateTaskStatus = async (req: AuthRequest, res: Response, next: Ne
       return;
     }
 
-    // Only assignee or manager can update status
+
     const project = await prisma.project.findUnique({ where: { id: task.projectId } });
     if (task.assigneeId !== req.user?.id && project?.managerId !== req.user?.id) {
       res.status(403).json({ success: false, message: 'Not authorized to update this task' });
@@ -109,7 +109,7 @@ export const updateTaskStatus = async (req: AuthRequest, res: Response, next: Ne
       data: { status: validatedData.status },
     });
 
-    // Notify manager if assignee updates status
+
     if (req.user?.id === task.assigneeId && project?.managerId && project.managerId !== req.user.id) {
       const user = await prisma.user.findUnique({ where: { id: req.user.id } });
       await prisma.notification.create({

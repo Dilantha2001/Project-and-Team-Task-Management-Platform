@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Search, Plus, X } from "lucide-react";
 import { api } from "@/services/api";
-import { Project, User } from "@/lib/mockData";
+import { Project, User } from "@/types";
 import { getAvatarGradient } from "@/lib/utils";
 
 export default function ManagerProjectsPage() {
@@ -147,7 +147,7 @@ export default function ManagerProjectsPage() {
         </CardContent>
       </Card>
 
-      {/* Create Project Modal */}
+      
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">

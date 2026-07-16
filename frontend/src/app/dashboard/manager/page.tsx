@@ -6,7 +6,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { api } from "@/services/api";
-import { Project, User, Task } from "@/lib/mockData";
+import { Project, User, Task } from "@/types";
 import { FolderKanban, Users, Filter, Download, Plus, X, CheckSquare } from "lucide-react";
 import { getAvatarGradient } from "@/lib/utils";
 
@@ -183,7 +183,7 @@ export default function ManagerDashboard() {
         ))}
       </div>
 
-      {/* Add Project Modal */}
+      
       {isAddProjectOpen && (
         <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
@@ -237,7 +237,7 @@ export default function ManagerDashboard() {
         </div>
       )}
 
-      {/* Add Task Modal */}
+      
       {managingProjectId && (
         <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">

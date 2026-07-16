@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Search } from "lucide-react";
 import { api } from "@/services/api";
-import { Task, Project, User } from "@/lib/mockData";
+import { Task, Project, User } from "@/types";
 
 export default function MemberTasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);

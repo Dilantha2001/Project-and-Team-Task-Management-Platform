@@ -121,7 +121,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex text-[#111827]">
-      {/* Command Palette Modal (High-Mark Feature) */}
+      
       {isCommandPaletteOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] sm:pt-[20vh] bg-gray-900/40 backdrop-blur-sm" onClick={() => setIsCommandPaletteOpen(false)}>
           <div 
@@ -162,7 +162,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
         </div>
       )}
 
-      {/* Sidebar */}
+      
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex shrink-0 relative z-20">
         <div className="h-16 flex items-center px-6 border-b border-gray-100">
           <div className="flex items-center gap-2">
@@ -201,7 +201,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
         </nav>
       </aside>
 
-      {/* Mobile Sidebar Overlay */}
+      
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
           <aside className="w-64 bg-white h-full flex flex-col shadow-xl animate-in slide-in-from-left" onClick={e => e.stopPropagation()}>
@@ -245,12 +245,12 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
         </div>
       )}
 
-      {/* Main Content */}
+      
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
-        {/* Top Navbar */}
+        
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 shrink-0 relative z-30">
           <div className="flex-1 flex items-center">
-            {/* Mobile Menu Button */}
+            
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
               className="mr-3 p-2 -ml-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg md:hidden focus:outline-none"
@@ -258,7 +258,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
               <Menu className="h-5 w-5" />
             </button>
 
-            {/* Command Palette Trigger */}
+            
             <button 
               onClick={() => setIsCommandPaletteOpen(true)}
               className="hidden sm:flex items-center w-72 bg-gray-50 border border-gray-200 rounded-full px-4 py-1.5 text-sm text-gray-500 hover:bg-gray-100 hover:border-gray-300 transition-colors focus:outline-none"
@@ -273,7 +273,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
           </div>
           
           <div className="flex items-center space-x-4">
-            {/* Interactive Notifications */}
+            
             <div className="relative">
               <button 
                 onClick={() => { setIsNotificationsOpen(!isNotificationsOpen); setIsProfileOpen(false); }}
@@ -346,11 +346,11 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
           </div>
         </header>
 
-        {/* Scrollable Content */}
+        
         <div className="flex-1 overflow-y-auto bg-[#F8F9FA] flex flex-col relative z-10">
           <div className="p-6 md:p-8 flex-1">
             <div className="max-w-7xl mx-auto">
-              {/* Breadcrumbs */}
+              
               <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
                 {breadcrumbs.map((crumb, index) => (
                   <React.Fragment key={crumb.href}>
@@ -364,7 +364,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
                 ))}
               </nav>
 
-              {/* Page Content */}
+              
               {children}
             </div>
           </div>

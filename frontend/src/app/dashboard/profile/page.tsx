@@ -89,7 +89,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Avatar & Quick Info */}
+        
         <div className="lg:col-span-1 space-y-6">
           <Card>
             <CardContent className="p-6">
@@ -133,7 +133,7 @@ export default function ProfilePage() {
           </Card>
         </div>
 
-        {/* Right Column: Forms */}
+        
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader className="border-b border-gray-100">

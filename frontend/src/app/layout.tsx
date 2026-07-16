@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-import { MockDataProvider } from "@/context/MockDataContext";
+
 
 export const metadata: Metadata = {
   title: "Task Management Platform",
@@ -30,9 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
-        <MockDataProvider>
           {children}
-        </MockDataProvider>
       </body>
     </html>
   );

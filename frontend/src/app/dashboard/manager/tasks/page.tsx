@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Search, CheckSquare } from "lucide-react";
 import { api } from "@/services/api";
-import { Task, Project, User } from "@/lib/mockData";
+import { Task, Project, User } from "@/types";
 import { getAvatarGradient } from "@/lib/utils";
 
 export default function ManagerTasksPage() {

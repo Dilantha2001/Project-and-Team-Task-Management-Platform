@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { api } from "@/services/api";
 import { Users, Search, Plus, X, Edit, Trash2 } from "lucide-react";
-import { Role, User } from "@/lib/mockData";
+import { Role, User } from "@/types";
 import { getAvatarGradient } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -182,7 +182,7 @@ export default function AdminUsersPage() {
         </CardContent>
       </Card>
 
-      {/* Create User Modal */}
+      
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
