@@ -25,7 +25,7 @@ export default function Register() {
       if (response.success) {
         router.push("/login");
       }
-    } catch (err: Record<string, unknown>) {
+    } catch (err: any) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
     }
   };

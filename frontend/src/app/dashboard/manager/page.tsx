@@ -35,7 +35,7 @@ export default function ManagerDashboard() {
       setProjects(projs);
       setUsers(usrs);
     } catch {
-      console.error(e);
+      console.error("error fetching data");
     }
   };
 
@@ -91,8 +91,8 @@ export default function ManagerDashboard() {
           description: newTaskDesc,
           status: "TODO",
           projectId: managingProjectId,
-          assigneeId: newTaskAssignee || undefined,
-          dueDate: newTaskDueDate ? new Date(newTaskDueDate).toISOString() : undefined
+          assigneeId: newTaskAssignee || null,
+          dueDate: newTaskDueDate ? new Date(newTaskDueDate).toISOString() : ""
         });
         setManagingProjectId(null);
         setNewTaskTitle("");

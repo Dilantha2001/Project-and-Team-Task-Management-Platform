@@ -35,7 +35,7 @@ export default function ManagerTasksPage() {
         setProjects(p || []);
         setUsers(u || []);
       } catch {
-        console.error(e);
+        console.error("error loading data");
       }
     };
     loadData();

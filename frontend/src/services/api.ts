@@ -31,11 +31,11 @@ apiClient.interceptors.request.use((config) => {
 });
 
 export const authApi = {
-  login: async (credentials: Record<string, unknown>) => {
+  login: async (credentials: any) => {
     const response = await apiClient.post('/auth/login', credentials);
     return response.data;
   },
-  register: async (userData: Record<string, unknown>) => {
+  register: async (userData: any) => {
     const response = await apiClient.post('/auth/register', userData);
     return response.data;
   },
@@ -50,12 +50,12 @@ export const api = {
     const response = await apiClient.get(`/users/${id}`);
     return response.data.data;
   },
-  createUser: async (userData: Record<string, unknown>): Promise<User> => {
+  createUser: async (userData: any): Promise<User> => {
     // Admins creating a user is basically registering them
     const response = await apiClient.post('/auth/register', userData);
     return response.data.data;
   },
-  updateUser: async (id: string, userData: Record<string, unknown>): Promise<User> => {
+  updateUser: async (id: string, userData: any): Promise<User> => {
     const response = await apiClient.put(`/users/${id}`, userData);
     return response.data.data;
   },

@@ -51,7 +51,7 @@ export default function MemberProjectsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {projects.map((project: Record<string, unknown>) => {
+              {projects.map((project: any) => {
                 const managerName = project.manager?.name || "N/A";
                 return (
                   <tr key={project.id} className="hover:bg-gray-50/50 transition-colors">
