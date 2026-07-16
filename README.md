@@ -1,5 +1,7 @@
 # CyphTask - Project and Team Task Management Platform
 
+<video src="./DemoVideo.mp4" controls="controls" width="100%"></video>
+
 **Manage your teams with precision.**
 
 CyphTask is the complete SaaS platform for project managers to assign tasks, track deadlines, and collaborate without friction. It features role-based access control and real-time dashboard analytics.
