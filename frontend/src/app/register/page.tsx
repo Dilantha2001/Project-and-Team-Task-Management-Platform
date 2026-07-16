@@ -58,7 +58,7 @@ export default function Register() {
               <span className="text-indigo-300">with us today.</span>
             </h1>
             <p className="text-lg text-indigo-100/80 leading-relaxed font-light">
-              Join CyphTask and experience the best project management platform tailored for your team's success.
+              Join CyphTask and experience the best project management platform tailored for your team&apos;s success.
             </p>
           </div>
         </div>
