@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import { authApi } from "@/services/api";
 
 export default function Register() {
@@ -10,11 +10,13 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
     
     try {
       const response = await authApi.register({
@@ -27,57 +29,139 @@ export default function Register() {
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 border border-gray-100 rounded-xl shadow-xl shadow-gray-200/50">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Create an account</h2>
-          <p className="mt-2 text-sm text-gray-500">Join our platform today</p>
+    <div className="min-h-screen flex bg-white">
+      
+      <div className="hidden lg:flex lg:w-1/2 relative bg-indigo-900 overflow-hidden">
+        
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900"></div>
+        <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <div className="absolute bottom-[10%] right-[10%] w-[50%] h-[50%] rounded-full bg-violet-500/20 blur-3xl"></div>
+        
+        
+        <div className="relative z-10 flex flex-col h-full p-16 w-full">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-white/10">
+              <span className="text-indigo-900 font-bold text-xl">C</span>
+            </div>
+            <span className="text-2xl font-bold text-white tracking-tight">CyphTask</span>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center max-w-lg space-y-6">
+            <h1 className="text-5xl font-bold text-white leading-[1.1] tracking-tight">
+              Start your journey <br/>
+              <span className="text-indigo-300">with us today.</span>
+            </h1>
+            <p className="text-lg text-indigo-100/80 leading-relaxed font-light">
+              Join CyphTask and experience the best project management platform tailored for your team's success.
+            </p>
+          </div>
         </div>
-        
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm border border-red-100">{error}</div>}
-        
-        <form onSubmit={handleRegister} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-            <input 
-              type="text" 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-              placeholder="John Doe"
-              required 
-            />
+      </div>
+
+      
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-white relative">
+        <div className="w-full max-w-md space-y-8">
+          
+          <div className="text-left">
+            
+            <div className="lg:hidden flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
+                <span className="text-white font-bold text-xl">C</span>
+              </div>
+              <span className="text-2xl font-bold text-gray-900 tracking-tight">CyphTask</span>
+            </div>
+            
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Create an account</h2>
+            <p className="mt-3 text-gray-500">Please enter your details to sign up.</p>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-              placeholder="you@example.com"
-              required 
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-              placeholder="••••••••"
-              required 
-            />
-          </div>
-          <button type="submit" className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 transition-all shadow-sm">
-            Sign Up
-          </button>
-        </form>
+          
+          {error && (
+            <div className="bg-red-50/50 text-red-600 p-4 rounded-xl text-sm border border-red-100 flex items-start">
+              <svg className="w-5 h-5 mr-3 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"></path></svg>
+              {error}
+            </div>
+          )}
+          
+          <form onSubmit={handleRegister} className="space-y-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Full Name</label>
+              <div className="relative">
+                <User className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors text-gray-400" />
+                <input 
+                  type="text" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-gray-50/50 border pl-11 pr-4 py-3 rounded-xl text-gray-900 focus:bg-white focus:ring-4 outline-none transition-all border-gray-200 focus:border-indigo-500 focus:ring-indigo-500/10"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Email address</label>
+              <div className="relative">
+                <Mail className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors text-gray-400" />
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-gray-50/50 border pl-11 pr-4 py-3 rounded-xl text-gray-900 focus:bg-white focus:ring-4 outline-none transition-all border-gray-200 focus:border-indigo-500 focus:ring-indigo-500/10"
+                  placeholder="name@company.com"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Password</label>
+              <div className="relative">
+                <Lock className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors text-gray-400" />
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-gray-50/50 border pl-11 pr-4 py-3 rounded-xl text-gray-900 focus:bg-white focus:ring-4 outline-none transition-all border-gray-200 focus:border-indigo-500 focus:ring-indigo-500/10"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="group w-full relative bg-indigo-600 text-white font-semibold py-3.5 rounded-xl hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-600/20 transition-all shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+              <span className="relative flex items-center justify-center gap-2">
+                {isLoading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <>
+                    Sign up <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
+              </span>
+            </button>
+          </form>
+          
+          <p className="text-center text-sm text-gray-500 font-medium">
+            Already have an account?{' '}
+            <a href="/login" className="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors">
+              Sign in
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
