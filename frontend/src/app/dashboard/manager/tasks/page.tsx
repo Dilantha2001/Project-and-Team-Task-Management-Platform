@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Search, CheckSquare } from "lucide-react";
 import { api } from "@/services/api";
 import { Task, Project, User } from "@/lib/mockData";
+import { getAvatarGradient } from "@/lib/utils";
 
 export default function ManagerTasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -83,7 +84,9 @@ export default function ManagerTasksPage() {
                     <td className="px-6 py-4">
                       {assignee ? (
                         <div className="flex items-center">
-                          <img src={assignee.avatarUrl} alt="" className="w-6 h-6 rounded-full mr-2" />
+                          <div className={`w-6 h-6 rounded-full bg-gradient-to-tr ${getAvatarGradient(assignee.name)} text-white flex items-center justify-center font-bold text-xs shadow-sm mr-2 shrink-0`}>
+                            {assignee.name.charAt(0).toUpperCase()}
+                          </div>
                           <span className="text-gray-700">{assignee.name}</span>
                         </div>
                       ) : (

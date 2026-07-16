@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { api } from "@/services/api";
 import { Project, User, Task } from "@/lib/mockData";
 import { FolderKanban, Users, Filter, Download, Plus, X, CheckSquare } from "lucide-react";
+import { getAvatarGradient } from "@/lib/utils";
 
 export default function ManagerDashboard() {
   const router = useRouter();
@@ -165,14 +166,14 @@ export default function ManagerDashboard() {
                   {(project.memberIds || []).map((id, index) => {
                     const user = users.find(u => u.id === id);
                     return user ? (
-                      <img 
+                      <div 
                         key={user.id}
-                        src={user.avatarUrl} 
-                        alt={user.name} 
-                        className="h-8 w-8 rounded-full border-2 border-white relative object-cover shadow-sm"
+                        className={`h-8 w-8 rounded-full border-2 border-white relative shadow-sm flex items-center justify-center text-white font-bold text-xs bg-gradient-to-tr ${getAvatarGradient(user.name)} shrink-0`}
                         title={user.name}
                         style={{ zIndex: project.memberIds.length - index }}
-                      />
+                      >
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
                     ) : null;
                   })}
                 </div>

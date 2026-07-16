@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Search, Plus, X } from "lucide-react";
 import { api } from "@/services/api";
 import { Project, User } from "@/lib/mockData";
+import { getAvatarGradient } from "@/lib/utils";
 
 export default function ManagerProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -108,13 +109,14 @@ export default function ManagerProjectsPage() {
                         {(project.memberIds || []).slice(0,3).map((id, index) => {
                           const user = users.find(u => u.id === id);
                           return user ? (
-                            <img 
+                            <div 
                               key={user.id} 
-                              src={user.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} 
-                              alt={user.name} 
-                              className="h-6 w-6 rounded-full border-2 border-white object-cover"
+                              className={`h-6 w-6 rounded-full border-2 border-white bg-gradient-to-tr ${getAvatarGradient(user.name)} text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-sm`}
                               style={{ zIndex: 10 - index }}
-                            />
+                              title={user.name}
+                            >
+                              {user.name.charAt(0).toUpperCase()}
+                            </div>
                           ) : null;
                         })}
                         {(project.memberIds || []).length > 3 && (

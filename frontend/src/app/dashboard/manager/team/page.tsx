@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Users, Search } from "lucide-react";
 import { api } from "@/services/api";
 import { User } from "@/lib/mockData";
+import { getAvatarGradient } from "@/lib/utils";
 
 export default function ManagerTeamPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -13,9 +14,16 @@ export default function ManagerTeamPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const u = await api.getUsers().catch(() => []);
-        // Managers usually only see team members
-        setUsers(u.filter((user: any) => user.role === "TEAM_MEMBER"));
+        const [u, p] = await Promise.all([
+          api.getUsers().catch(() => []),
+          api.getProjects().catch(() => [])
+        ]);
+        
+        // Find member IDs that are part of this manager's projects
+        const myProjectMemberIds = new Set(p.flatMap(proj => proj.memberIds));
+        
+        // Show only team members who are assigned to at least one of this manager's projects
+        setUsers(u.filter((user: any) => user.role === "TEAM_MEMBER" && myProjectMemberIds.has(user.id)));
       } catch (e) {
         console.error(e);
       }
@@ -58,7 +66,9 @@ export default function ManagerTeamPage() {
               {users.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4 flex items-center">
-                    <img src={user.avatarUrl} alt={user.name} className="w-8 h-8 rounded-full mr-3" />
+                    <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${getAvatarGradient(user.name)} text-white flex items-center justify-center font-bold text-sm shadow-sm ring-1 ring-white mr-3 shrink-0`}>
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
                     <span className="font-medium text-gray-900">{user.name}</span>
                   </td>
                   <td className="px-6 py-4 text-gray-500">{user.email}</td>

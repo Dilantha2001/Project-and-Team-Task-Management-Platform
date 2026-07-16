@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { api } from "@/services/api";
 import { Users, Search, Plus, X, Edit, Trash2 } from "lucide-react";
 import { Role, User } from "@/lib/mockData";
+import { getAvatarGradient } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -140,11 +141,9 @@ export default function AdminUsersPage() {
                 ) : filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
                     <td className="px-6 py-4 flex items-center">
-                      <img 
-                        src={user.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} 
-                        alt={user.name} 
-                        className="h-10 w-10 rounded-full border border-gray-200 object-cover"
-                      />
+                      <div className={`h-10 w-10 rounded-full bg-gradient-to-tr ${getAvatarGradient(user.name)} text-white flex items-center justify-center font-bold text-lg shadow-sm border border-gray-200 shrink-0`}>
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
                       <div className="ml-4">
                         <p className="font-semibold text-gray-900">{user.name}</p>
                         <p className="text-gray-500 text-xs mt-0.5">{user.email}</p>

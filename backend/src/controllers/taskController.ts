@@ -22,6 +22,11 @@ export const getTasks = async (req: AuthRequest, res: Response, next: NextFuncti
 
     let tasks;
 
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'User ID missing' });
+      return;
+    }
+
     if (userRole === 'ADMIN') {
       tasks = await prisma.task.findMany({
         include: { project: { select: { name: true } }, assignee: { select: { name: true } } },

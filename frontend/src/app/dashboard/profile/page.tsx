@@ -95,11 +95,9 @@ export default function ProfilePage() {
             <CardContent className="p-6">
               <div className="flex flex-col items-center">
                 <div className="relative mb-4 group cursor-pointer">
-                  <img 
-                    src={`https://ui-avatars.com/api/?name=${formData.name ? formData.name.replace(' ', '+') : role.replace('_', '+')}&background=6366f1&color=fff&size=128`} 
-                    alt="Profile" 
-                    className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover transition-transform group-hover:scale-105"
-                  />
+                  <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-gradient-to-tr from-indigo-600 to-purple-500 text-white flex items-center justify-center font-bold text-5xl transition-transform group-hover:scale-105">
+                    {(formData.name || role).charAt(0).toUpperCase()}
+                  </div>
                   <div className="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full shadow-lg hover:bg-indigo-700 transition-colors">
                     <Camera className="w-4 h-4" />
                   </div>
