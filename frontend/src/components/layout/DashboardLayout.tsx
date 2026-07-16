@@ -8,6 +8,7 @@ import {
   Search, Bell, User, Calendar, FileText, Shield, LogOut, ChevronRight,
   Command, CheckCircle2, AlertCircle
 } from "lucide-react";
+import { api, Notification } from "@/services/api";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,45 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000); // Polling every 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const data = await api.getNotifications();
+      setNotifications(data);
+    } catch (error) {
+      console.error("Failed to fetch notifications");
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      await api.markAllNotificationsAsRead();
+      setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+    } catch (error) {
+      console.error("Failed to mark notifications as read");
+    }
+  };
+
+  const markAsRead = async (id: string, link?: string) => {
+    try {
+      await api.markNotificationAsRead(id);
+      setNotifications(notifications.map(n => n.id === id ? { ...n, isRead: true } : n));
+      if (link) {
+        router.push(link);
+        setIsNotificationsOpen(false);
+      }
+    } catch (error) {
+      console.error("Failed to mark notification as read");
+    }
+  };
 
   // Keyboard shortcut for Command Palette (Cmd+K or Ctrl+K)
   useEffect(() => {
@@ -197,39 +237,42 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
                 className="text-gray-400 hover:text-gray-600 relative p-1 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white animate-pulse" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white animate-pulse" />
+                )}
               </button>
               
               {isNotificationsOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
                   <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
                     <h3 className="font-semibold text-gray-900">Notifications</h3>
-                    <span className="text-xs text-indigo-600 font-medium cursor-pointer hover:underline">Mark all as read</span>
+                    {unreadCount > 0 && (
+                      <span onClick={markAllAsRead} className="text-xs text-indigo-600 font-medium cursor-pointer hover:underline">Mark all as read</span>
+                    )}
                   </div>
                   <div className="max-h-64 overflow-y-auto no-scrollbar">
-                    <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 flex items-start">
-                      <div className="bg-indigo-100 p-1.5 rounded-full mr-3 mt-0.5">
-                        <CheckCircle2 className="w-4 h-4 text-indigo-600" />
+                    {notifications.length === 0 ? (
+                      <div className="px-4 py-6 text-center text-sm text-gray-500">
+                        No notifications yet.
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">Task Completed</p>
-                        <p className="text-xs text-gray-500 mt-0.5">Alice finished "UI Design"</p>
-                        <p className="text-[10px] text-gray-400 mt-1">2 mins ago</p>
-                      </div>
-                    </div>
-                    <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-start">
-                      <div className="bg-amber-100 p-1.5 rounded-full mr-3 mt-0.5">
-                        <AlertCircle className="w-4 h-4 text-amber-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">Deadline Approaching</p>
-                        <p className="text-xs text-gray-500 mt-0.5">"Frontend Release" is due tomorrow</p>
-                        <p className="text-[10px] text-gray-400 mt-1">1 hr ago</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="px-4 py-2 border-t border-gray-100 text-center">
-                    <a href="#" className="text-xs text-indigo-600 font-medium hover:underline">View all notifications</a>
+                    ) : (
+                      notifications.map(n => (
+                        <div 
+                          key={n.id} 
+                          onClick={() => !n.isRead ? markAsRead(n.id, n.link) : n.link ? router.push(n.link) : null}
+                          className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 flex items-start ${n.isRead ? 'opacity-70' : 'bg-indigo-50/30'}`}
+                        >
+                          <div className={`p-1.5 rounded-full mr-3 mt-0.5 ${n.isRead ? 'bg-gray-100' : 'bg-indigo-100'}`}>
+                            <Bell className={`w-4 h-4 ${n.isRead ? 'text-gray-500' : 'text-indigo-600'}`} />
+                          </div>
+                          <div>
+                            <p className={`text-sm font-medium ${n.isRead ? 'text-gray-600' : 'text-gray-900'}`}>{n.title}</p>
+                            <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
+                            <p className="text-[10px] text-gray-400 mt-1">{new Date(n.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               )}

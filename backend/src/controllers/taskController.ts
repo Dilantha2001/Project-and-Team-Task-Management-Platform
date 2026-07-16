@@ -59,6 +59,18 @@ export const createTask = async (req: AuthRequest, res: Response, next: NextFunc
       data: validatedData,
     });
 
+    // Notify assignee if assigned
+    if (validatedData.assigneeId && validatedData.assigneeId !== req.user?.id) {
+      await prisma.notification.create({
+        data: {
+          userId: validatedData.assigneeId,
+          title: 'New Task Assigned',
+          message: `You have been assigned a new task: ${task.title} in project ${project.name}`,
+          link: '/dashboard/member/tasks'
+        }
+      });
+    }
+
     res.status(201).json({ success: true, data: task });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -91,6 +103,19 @@ export const updateTaskStatus = async (req: AuthRequest, res: Response, next: Ne
       where: { id },
       data: { status: validatedData.status },
     });
+
+    // Notify manager if assignee updates status
+    if (req.user?.id === task.assigneeId && project?.managerId && project.managerId !== req.user.id) {
+      const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+      await prisma.notification.create({
+        data: {
+          userId: project.managerId,
+          title: 'Task Status Updated',
+          message: `${user?.name || 'A team member'} updated the status of "${task.title}" to ${validatedData.status}`,
+          link: '/dashboard/manager/tasks'
+        }
+      });
+    }
 
     res.status(200).json({ success: true, data: updatedTask });
   } catch (error) {

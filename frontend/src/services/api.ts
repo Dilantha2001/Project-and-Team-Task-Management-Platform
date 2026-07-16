@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { User, Project, Task, Role, TaskStatus } from "@/lib/mockData"; // Reusing types for now
 
+export interface Notification {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  link?: string;
+  createdAt: string;
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 const apiClient = axios.create({
@@ -76,6 +86,16 @@ export const api = {
   },
   updateTaskStatus: async (id: string, status: TaskStatus): Promise<void> => {
     await apiClient.patch(`/tasks/${id}/status`, { status });
+  },
+  getNotifications: async (): Promise<Notification[]> => {
+    const response = await apiClient.get('/notifications');
+    return response.data.data;
+  },
+  markNotificationAsRead: async (id: string): Promise<void> => {
+    await apiClient.put(`/notifications/${id}/read`);
+  },
+  markAllNotificationsAsRead: async (): Promise<void> => {
+    await apiClient.put('/notifications/mark-all-read');
   },
 };
 
