@@ -1,7 +1,7 @@
 # CyphTask - Project and Team Task Management Platform
 
 ## 📹 Demo Video
-🔗 **[Watch Application Demo Video on Google Drive]([https://drive.google.com/file/d/1Bw11r_zm4B9KP8P4DjZEGJarepOK2_Dk/view?usp=drive_link](https://drive.google.com/file/d/1Tsvrz_BdeycNIdqz2UojttwmkSDlb0a4/view?usp=drive_link))**
+🔗 **[Watch Application Demo Video on Google Drive](https://drive.google.com/file/d/1Tsvrz_BdeycNIdqz2UojttwmkSDlb0a4/view?usp=drive_link)**
 
 **Manage your teams with precision.**
 
